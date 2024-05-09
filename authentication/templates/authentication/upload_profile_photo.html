@@ -1,0 +1,25 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+   <link rel='stylesheet' type='text/css' media='screen' href="{% static 'authentication/upload-photo-profile.css' %}">
+{% endblock style %}
+{% block content %}
+    
+    <div class="profile-actuel">
+        <h2>Photo <span>Profile</span></h2>
+        {% if user.profile_photo %}
+                    <img src="{{ user.profile_photo.url }}" class="author-photo">
+                {% else %}
+                    <img src="{% static 'image/default-user-profile.jpg' %}" alt="" class="author-photo">
+        {% endif %}
+        <form method="post" enctype="multipart/form-data">
+            {% for field in form.visible_fields %}
+                {{ field }}
+            {% endfor %}
+            {% csrf_token %}
+            <input type="submit" value="Enregistrer">
+        </form>
+    </div>
+    
+{% endblock content %}

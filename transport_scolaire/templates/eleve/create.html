@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Add Eleve</h3></div>
+{% endblock title %}
+{% block style %}
+
+<style>
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding:20px 50px;
+      border-radius: 5px;
+      width: 100%;
+      max-width: 700px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .popup-buttons button {
+      margin-left: 10px;
+    }
+    .btn-search{
+      position: absolute;
+      right: 0px;
+      top: -9px;
+    }
+    .pop-search{
+      padding: 3px 3px;
+    }
+  </style>
+
+
+{% endblock style %}
+{% block content %}
+   <form class='form-container ' method='POST' enctype='multipart/form-data'>
+      {% csrf_token %}
+      <div>
+         <label for="date_inscription">date_inscription :</label>
+         {{ form.date_inscription }}
+         {% for error in form.date_inscription.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="date_naissance">date_naissance :</label>
+         {{ form.date_naissance }}
+         {% for error in form.date_naissance.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="image">image :</label>
+         {{ form.image }}
+         {% for error in form.image.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="nom">nom :</label>
+         {{ form.nom }}
+         {% for error in form.nom.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="prenoms">prenoms :</label>
+         {{ form.prenoms }}
+         {% for error in form.prenoms.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="adresse">adresse :</label>
+         {{ form.adresse }}
+         {% for error in form.adresse.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="ligne">ligne :</label>
+         {{ form.ligne }}
+         {% for error in form.ligne.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="parent">parent :</label>
+         {{ form.parent }}
+         {% for error in form.parent.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="ecole">ecole :</label>
+         {{ form.ecole }}
+         {% for error in form.ecole.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="classe">classe :</label>
+         {{ form.classe }}
+         {% for error in form.classe.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="lieu_ramassage">lieu_ramassage :</label>
+         {{ form.lieu_ramassage }}
+         {% for error in form.lieu_ramassage.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="montant_frais">montant_frais :</label>
+         {{ form.montant_frais }}
+         {% for error in form.montant_frais.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="etat">etat :</label>
+         {{ form.etat }}
+         {% for error in form.etat.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <button type='submit' class='btn btn-primary text-white' >save</button>
+   </form>
+{% endblock content %}
+{% block script %}
+
+<script>
+    const app = Vue.createApp({
+      data() {
+        return {
+
+                }
+            },
+      methods: {
+
+      },
+    
+      mounted() {
+
+      }
+    })
+
+    app.mount('#app')
+  </script>
+   <script>
+   console.log("Hello World Generator")
+   
+   </script>
+{% endblock script %}

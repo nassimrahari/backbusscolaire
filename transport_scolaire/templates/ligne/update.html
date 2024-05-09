@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Edit Ligne</h3></div>
+{% endblock title %}
+{% block style %}
+
+<style>
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding:20px 50px;
+      border-radius: 5px;
+      width: 100%;
+      max-width: 700px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .popup-buttons button {
+      margin-left: 10px;
+    }
+    .btn-search{
+      position: absolute;
+      right: 0px;
+      top: -9px;
+    }
+    .pop-search{
+      padding: 3px 3px;
+    }
+  </style>
+
+
+{% endblock style %}
+{% block content %}
+   <form class='form-container inline-tab' method='POST' enctype='multipart/form-data'>
+      <div class='actions'>
+      <a href='{% url 'transport_scolaire:ligne-list' %}'  class='btn btn-outline-primary text-primary'>
+         <i class="fa-solid fa-list-ul"></i> <span style="margin-left:10px;">List</span>   </a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:ligne-delete' object.pk %}"><i class='fa-solid fa-trash-can'></i><span style="margin-left:10px;">Delete</span></a>
+      {% csrf_token %}
+      </div>
+      <div>
+         <label for="nom">nom :</label>
+         {{ form.nom }}
+         {% for error in form.nom.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+         <h3>OrdreLieus</h3>
+         <table class='table' id='table-OrdreLieu'>
+            <thead>
+            <th>lieu_ligne</th>
+            <th>num_ordre</th>
+            <th>Actions</th>
+            </thead>
+            <tbody id='table-tbody-OrdreLieu'>
+            </tbody>
+         </table>
+      <button class="btn btn-outline-success" id="btn-add-line-transport_scolaire-OrdreLieu"><i class="fas fa-plus"></i><span>add-line</span></button>
+      <button type='submit' class='btn btn-primary text-white' >update</button>
+   </form>
+{% endblock content %}
+{% block script %}
+
+<script>
+    const app = Vue.createApp({
+      data() {
+        return {
+
+                }
+            },
+      methods: {
+
+      },
+    
+      mounted() {
+
+      }
+    })
+
+    app.mount('#app')
+  </script>
+   <script>
+   console.log("Hello World Generator")
+   
+   let dataLieuLigne=[];
+   function fetchDataLieuLigne() {
+      fetch("/api/transport_scolaire/lieulignes/?paginate=false")
+      .then(response => response.json())
+      .then(data => {
+         indicatorLieuLigne=true;
+         dataLieuLigne=data;
+         console.log(data);
+      })
+      .catch(error => console.error(error));
+      }
+   fetchDataLieuLigne();
+   function createOptionsLieuLigne() {
+      let options = "";
+         options += `<option value="">-------------</option>`;
+      dataLieuLigne.forEach(item => {
+         options += `<option value="${item.pk}">${item.repr}</option>`;
+      });
+      return options;
+   }
+   function createLigneOrdreLieu(event,dataLigne) {
+      try {
+         event.preventDefault();
+      } catch (error) {
+      }
+
+      let tr = document.createElement("tr");
+
+      let id_ordrelieu=document.createElement("input");
+      id_ordrelieu.type = "hidden";
+      if(dataLigne){
+
+      id_ordrelieu.value=dataLigne.pk;
+      }else{
+
+      id_ordrelieu.value=null;
+      }
+      tr.appendChild(id_ordrelieu);
+      id_ordrelieu.name="ordrelieu[]";
+      let td_lieu_ligne = document.createElement("td");
+      let select_lieu_ligne = document.createElement("select");
+      select_lieu_ligne.name = "lieu_ligne[]";
+      select_lieu_ligne.placeholder = "lieu_ligne";
+      select_lieu_ligne.innerHTML = createOptionsLieuLigne();
+      if(dataLigne){
+         for (var i = 0; i < select_lieu_ligne.options.length; i++) {
+            if (select_lieu_ligne.options[i].value == dataLigne.lieu_ligne.pk) {
+               select_lieu_ligne.selectedIndex = i;
+               break;
+            }
+         }
+      }
+      console.log(createOptionsLieuLigne());
+      td_lieu_ligne.appendChild(select_lieu_ligne);
+      tr.appendChild(td_lieu_ligne);
+
+      let td_num_ordre = document.createElement("td");
+      let input_num_ordre = document.createElement("input");
+      input_num_ordre.type = "text";
+      input_num_ordre.name = "num_ordre[]";
+      input_num_ordre.placeholder = "num_ordre";
+      if(dataLigne){
+         input_num_ordre.value=dataLigne.num_ordre;
+      }      td_num_ordre.appendChild(input_num_ordre);
+
+      tr.appendChild(td_num_ordre);
+
+      let td_btnSuprLigne = document.createElement("td");
+      let iconSuprLigne = document.createElement("i");
+      iconSuprLigne.className = "fa-solid fa-x fa-xl";
+      iconSuprLigne.style.color = "#ff0000";
+      iconSuprLigne.addEventListener("click", function() {
+         tr.remove();
+      });
+      td_btnSuprLigne.appendChild(iconSuprLigne);
+      tr.appendChild(td_btnSuprLigne);
+      document.getElementById("table-tbody-OrdreLieu").appendChild(tr);
+   }
+   document.getElementById("btn-add-line-transport_scolaire-OrdreLieu").addEventListener("click", createLigneOrdreLieu);
+   function fetchLigneOrdreLieu(){
+   fetch("/api/transport_scolaire/lignes/{{object.pk}}")
+   .then(response => response.json())
+   .then(data => {
+      dataLigneOrdreLieu=data.ordrelieus;
+      for (let i = 0; i < dataLigneOrdreLieu.length; i++) {
+         createLigneOrdreLieu(null,dataLigneOrdreLieu[i]);
+      }
+      console.log(data);
+      })
+      .catch(error => console.error(error));
+      }
+      fetchLigneOrdreLieu();
+   </script>
+{% endblock script %}

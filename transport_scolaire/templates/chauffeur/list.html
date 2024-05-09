@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Chauffeur List</h3></div>
+{% endblock title %}
+{% block content %}
+   <div class='actions'>
+      <a href='{% url 'transport_scolaire:chauffeur-create' %}' class='btn btn-primary text-white'>
+         Add New chauffeur
+   </a>
+   </div>
+   <form class='form-search'  method='GET'>
+   <div class='content-search'>
+   </div>
+   </form>
+   <form class='form-search'  method='GET'>
+         <input type='text' name='search_query' value='{{search_query}}' placeholder='search...'>
+         <button type='submit' class='btn btn-primary text-white' >Search</button>
+   </form>
+   <div class='table-responsive'>
+      <table class='table'>
+         <thead>
+            <tr>
+               <th>N°</th>
+               <th>nom</th>
+               <th>prenoms</th>
+               <th>tel</th>
+               <th>email</th>
+               <th>Actions<th>
+            </tr>
+         </thead>
+         <tbody>
+         {% for chauffeur in chauffeurs %}
+            <tr>
+               <td>{{ chauffeur.pk }}</td>
+               <td>{{ chauffeur.nom }}</td>
+               <td>{{ chauffeur.prenoms }}</td>
+               <td>{{ chauffeur.tel }}</td>
+               <td>{{ chauffeur.email }}</td>
+               <td class='col-actions'>
+                  <a class='see btn btn-outline-primary text-primary' href="{% url 'transport_scolaire:chauffeur-detail' chauffeur.pk %}"><i class='fa-solid fa-eye'></i></a>
+                  <a class='update btn btn-outline-secondary text-secondary' href="{% url 'transport_scolaire:chauffeur-update' chauffeur.pk %}"><i class='fa-solid fa-pen-to-square'></i></a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:chauffeur-delete' chauffeur.pk %}"><i class='fa-solid fa-trash-can'></i></a>
+               </td>
+            </tr>
+         {% endfor %}
+         </tbody>
+      </table>
+   </div>
+
+<div class="panigation">
+            <span>
+               <span>
+                   Page {{ chauffeurs.number }} sur {{ chauffeurs.paginator.num_pages }}.
+
+               </span>
+               {% if chauffeurs.has_previous %}
+                   <a href="?page=1">premiere</a>
+                   <a href="?page={{ chauffeurs.previous_page_number }}">precedente</a>
+               {% endif %}
+
+
+               {% if chauffeurs.has_next %}
+                   <a href="?page={{ chauffeurs.next_page_number }}">suivante</a>
+
+                   <a href="?page={{ chauffeurs.paginator.num_pages }}">derniere</a>
+               {% endif %}
+           </span>
+       </div>
+  
+{% endblock content %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Itineraire</h3></div>
+{% endblock title %}
+{% block content %}
+   <div class='actions'>
+      <a href='{% url 'transport_scolaire:itineraire-list' %}'  class='btn btn-outline-primary text-primary'>
+         <i class="fa-solid fa-list-ul"></i> <span style="margin-left:10px;">List</span>   </a>
+                  <a class='update btn btn-outline-secondary text-secondary' href="{% url 'transport_scolaire:itineraire-update' object.pk %}"><i class='fa-solid fa-pen-to-square'></i><span style="margin-left:10px;">Edit</span></a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:itineraire-delete' object.pk %}"><i class='fa-solid fa-trash-can'></i><span style="margin-left:10px;">Delete</span></a>
+   </div>
+   <div class='table-responsive'>
+      <table class='table'>
+         <tbody>
+            <tr>
+               <td>date_itineraire</td><td>{{object.date_itineraire}}</td>
+            </tr>
+            <tr>
+               <td>ligne</td><td>{{object.ligne}}</td>
+            </tr>
+            <tr>
+               <td>ligne_inverse</td><td>{{object.ligne_inverse}}</td>
+            </tr>
+         </tbody>
+      </table>
+      <h4>BusAssignation</h4>
+      <table class='table'>
+      <thead>
+<th>date_assignation</th><th>bus</th>      </thead>
+      <tbody>
+      {% for busassignation in object.busassignation_set.all  %}      <tr>
+<td>      {{busassignation.date_assignation}}</td>
+<td>      {{busassignation.bus}}</td>
+      </tr>
+      {% endfor %}      </tbody>
+      </tbody>
+      <h4>Horaire</h4>
+      <table class='table'>
+      <thead>
+<th>pointArret</th><th>heureDebut</th><th>heureFin</th>      </thead>
+      <tbody>
+      {% for horaire in object.horaire_set.all  %}      <tr>
+<td>      {{horaire.pointArret}}</td>
+<td>      {{horaire.heureDebut}}</td>
+<td>      {{horaire.heureFin}}</td>
+      </tr>
+      {% endfor %}      </tbody>
+      </tbody>
+   </div>
+{% endblock content %}

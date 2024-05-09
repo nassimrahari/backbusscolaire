@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Add Ligne</h3></div>
+{% endblock title %}
+{% block style %}
+
+<style>
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding:20px 50px;
+      border-radius: 5px;
+      width: 100%;
+      max-width: 700px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .popup-buttons button {
+      margin-left: 10px;
+    }
+    .btn-search{
+      position: absolute;
+      right: 0px;
+      top: -9px;
+    }
+    .pop-search{
+      padding: 3px 3px;
+    }
+  </style>
+
+
+{% endblock style %}
+{% block content %}
+   <form class='form-container inline-tab' method='POST' enctype='multipart/form-data'>
+      {% csrf_token %}
+      <div>
+         <label for="nom">nom :</label>
+         {{ form.nom }}
+         {% for error in form.nom.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+         <h3>OrdreLieus</h3>
+         <table class='table' id='table-OrdreLieu'>
+            <thead>
+            <th>lieu_ligne</th>
+            <th>num_ordre</th>
+            <th>Actions</th>
+            </thead>
+            <tbody id='table-tbody-OrdreLieu'>
+            </tbody>
+         </table>
+      <button class="btn btn-outline-success" id="btn-add-line-transport_scolaire-OrdreLieu"><i class="fas fa-plus"></i><span>add-line</span></button>
+      <button type='submit' class='btn btn-primary text-white' >save</button>
+   </form>
+{% endblock content %}
+{% block script %}
+
+<script>
+    const app = Vue.createApp({
+      data() {
+        return {
+
+                }
+            },
+      methods: {
+
+      },
+    
+      mounted() {
+
+      }
+    })
+
+    app.mount('#app')
+  </script>
+   <script>
+   console.log("Hello World Generator")
+   
+   let dataLieuLigne=[];
+   function fetchDataLieuLigne() {
+      fetch("/api/transport_scolaire/lieulignes/?paginate=false")
+      .then(response => response.json())
+      .then(data => {
+         indicatorLieuLigne=true;
+         dataLieuLigne=data;
+            for (let i = 0; i < 3; i++) {
+               createLigneOrdreLieu();
+            }
+         console.log(data);
+      })
+      .catch(error => console.error(error));
+      }
+   fetchDataLieuLigne();
+   function createOptionsLieuLigne() {
+      let options = "";
+         options += `<option value="">-------------</option>`;
+      dataLieuLigne.forEach(item => {
+         options += `<option value="${item.pk}">${item.repr}</option>`;
+      });
+      return options;
+   }
+   function createLigneOrdreLieu(event) {
+      try {
+         event.preventDefault();
+      } catch (error) {
+      }
+
+      let tr = document.createElement("tr");
+
+      let td_lieu_ligne = document.createElement("td");
+      let select_lieu_ligne = document.createElement("select");
+      select_lieu_ligne.name = "lieu_ligne[]";
+      select_lieu_ligne.placeholder = "lieu_ligne";
+      select_lieu_ligne.innerHTML = createOptionsLieuLigne();
+      console.log(createOptionsLieuLigne());
+      td_lieu_ligne.appendChild(select_lieu_ligne);
+      tr.appendChild(td_lieu_ligne);
+
+      let td_num_ordre = document.createElement("td");
+      let input_num_ordre = document.createElement("input");
+      input_num_ordre.type = "text";
+      input_num_ordre.name = "num_ordre[]";
+      input_num_ordre.placeholder = "num_ordre";
+      td_num_ordre.appendChild(input_num_ordre);
+
+      tr.appendChild(td_num_ordre);
+
+      let td_btnSuprLigne = document.createElement("td");
+      let iconSuprLigne = document.createElement("i");
+      iconSuprLigne.className = "fa-solid fa-x fa-xl";
+      iconSuprLigne.style.color = "#ff0000";
+      iconSuprLigne.addEventListener("click", function() {
+         tr.remove();
+      });
+      td_btnSuprLigne.appendChild(iconSuprLigne);
+      tr.appendChild(td_btnSuprLigne);
+      document.getElementById("table-tbody-OrdreLieu").appendChild(tr);
+   }
+   document.getElementById("btn-add-line-transport_scolaire-OrdreLieu").addEventListener("click", createLigneOrdreLieu);
+   </script>
+{% endblock script %}

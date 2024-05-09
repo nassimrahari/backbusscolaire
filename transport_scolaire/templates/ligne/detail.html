@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Ligne</h3></div>
+{% endblock title %}
+{% block content %}
+   <div class='actions'>
+      <a href='{% url 'transport_scolaire:ligne-list' %}'  class='btn btn-outline-primary text-primary'>
+         <i class="fa-solid fa-list-ul"></i> <span style="margin-left:10px;">List</span>   </a>
+                  <a class='update btn btn-outline-secondary text-secondary' href="{% url 'transport_scolaire:ligne-update' object.pk %}"><i class='fa-solid fa-pen-to-square'></i><span style="margin-left:10px;">Edit</span></a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:ligne-delete' object.pk %}"><i class='fa-solid fa-trash-can'></i><span style="margin-left:10px;">Delete</span></a>
+   </div>
+   <div class='table-responsive'>
+      <table class='table'>
+         <tbody>
+            <tr>
+               <td>nom</td><td>{{object.nom}}</td>
+            </tr>
+         </tbody>
+      </table>
+      <h4>OrdreLieu</h4>
+      <table class='table'>
+      <thead>
+<th>lieu_ligne</th><th>num_ordre</th>      </thead>
+      <tbody>
+      {% for ordrelieu in object.ordrelieu_set.all  %}      <tr>
+<td>      {{ordrelieu.lieu_ligne}}</td>
+<td>      {{ordrelieu.num_ordre}}</td>
+      </tr>
+      {% endfor %}      </tbody>
+      </tbody>
+   </div>
+{% endblock content %}

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>OrdreLieu List</h3></div>
+{% endblock title %}
+{% block content %}
+   <div class='actions'>
+      <a href='{% url 'transport_scolaire:ordrelieu-create' %}' class='btn btn-primary text-white'>
+         Add New ordrelieu
+   </a>
+   </div>
+   <form class='form-search'  method='GET'>
+   <div class='content-search'>
+         <div class='d-flex group flex-column '>            <label>ligne</label>            <select type='text'  name='search_filter_ligne'>
+<option value=''>-----------</option>{% for ligne in lignes %}
+<option {% if search_filter_ligne|stringformat:"s" == ligne.pk|stringformat:"s" %}selected{% endif %}  value='{{ligne.pk}}'>{{ligne}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <div class='d-flex group flex-column '>            <label>lieu_ligne</label>            <select type='text'  name='search_filter_lieu_ligne'>
+<option value=''>-----------</option>{% for lieu_ligne in lieu_lignes %}
+<option {% if search_filter_lieu_ligne|stringformat:"s" == lieu_ligne.pk|stringformat:"s" %}selected{% endif %}  value='{{lieu_ligne.pk}}'>{{lieu_ligne}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <button type='submit' class='btn btn-primary sub-2 text-white' >Search</button>
+   </div>
+   </form>
+   <form class='form-search'  method='GET'>
+         <input type='text' name='search_query' value='{{search_query}}' placeholder='search...'>
+         <button type='submit' class='btn btn-primary text-white' >Search</button>
+   </form>
+   <div class='table-responsive'>
+      <table class='table'>
+         <thead>
+            <tr>
+               <th>N°</th>
+               <th>ligne</th>
+               <th>lieu_ligne</th>
+               <th>num_ordre</th>
+               <th>Actions<th>
+            </tr>
+         </thead>
+         <tbody>
+         {% for ordrelieu in ordrelieus %}
+            <tr>
+               <td>{{ ordrelieu.pk }}</td>
+               <td>{{ ordrelieu.ligne }}</td>
+               <td>{{ ordrelieu.lieu_ligne }}</td>
+               <td>{{ ordrelieu.num_ordre }}</td>
+               <td class='col-actions'>
+                  <a class='see btn btn-outline-primary text-primary' href="{% url 'transport_scolaire:ordrelieu-detail' ordrelieu.pk %}"><i class='fa-solid fa-eye'></i></a>
+                  <a class='update btn btn-outline-secondary text-secondary' href="{% url 'transport_scolaire:ordrelieu-update' ordrelieu.pk %}"><i class='fa-solid fa-pen-to-square'></i></a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:ordrelieu-delete' ordrelieu.pk %}"><i class='fa-solid fa-trash-can'></i></a>
+               </td>
+            </tr>
+         {% endfor %}
+         </tbody>
+      </table>
+   </div>
+
+<div class="panigation">
+            <span>
+               <span>
+                   Page {{ ordrelieus.number }} sur {{ ordrelieus.paginator.num_pages }}.
+
+               </span>
+               {% if ordrelieus.has_previous %}
+                   <a href="?page=1">premiere</a>
+                   <a href="?page={{ ordrelieus.previous_page_number }}">precedente</a>
+               {% endif %}
+
+
+               {% if ordrelieus.has_next %}
+                   <a href="?page={{ ordrelieus.next_page_number }}">suivante</a>
+
+                   <a href="?page={{ ordrelieus.paginator.num_pages }}">derniere</a>
+               {% endif %}
+           </span>
+       </div>
+  
+{% endblock content %}

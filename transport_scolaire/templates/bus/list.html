@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Bus List</h3></div>
+{% endblock title %}
+{% block content %}
+   <div class='actions'>
+      <a href='{% url 'transport_scolaire:bus-create' %}' class='btn btn-primary text-white'>
+         Add New bus
+   </a>
+   </div>
+   <form class='form-search'  method='GET'>
+   <div class='content-search'>
+         <div class='d-flex group flex-column '>            <label>type</label>            <select type='text'  name='search_filter_type'>
+<option value=''>-----------</option>{% for type in types %}
+<option {% if search_filter_type|stringformat:"s" == type.pk|stringformat:"s" %}selected{% endif %}  value='{{type.pk}}'>{{type}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <div class='d-flex group flex-column '>            <label>chauffeur</label>            <select type='text'  name='search_filter_chauffeur'>
+<option value=''>-----------</option>{% for chauffeur in chauffeurs %}
+<option {% if search_filter_chauffeur|stringformat:"s" == chauffeur.pk|stringformat:"s" %}selected{% endif %}  value='{{chauffeur.pk}}'>{{chauffeur}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <button type='submit' class='btn btn-primary sub-2 text-white' >Search</button>
+   </div>
+   </form>
+   <form class='form-search'  method='GET'>
+         <input type='text' name='search_query' value='{{search_query}}' placeholder='search...'>
+         <button type='submit' class='btn btn-primary text-white' >Search</button>
+   </form>
+   <div class='table-responsive'>
+      <table class='table'>
+         <thead>
+            <tr>
+               <th>N°</th>
+               <th>immatriculation</th>
+               <th>type</th>
+               <th>chauffeur</th>
+               <th>couleur</th>
+               <th>nbr_place</th>
+               <th>Actions<th>
+            </tr>
+         </thead>
+         <tbody>
+         {% for bus in buss %}
+            <tr>
+               <td>{{ bus.pk }}</td>
+               <td>{{ bus.immatriculation }}</td>
+               <td>{{ bus.type }}</td>
+               <td>{{ bus.chauffeur }}</td>
+               <td>{{ bus.couleur }}</td>
+               <td>{{ bus.nbr_place }}</td>
+               <td class='col-actions'>
+                  <a class='see btn btn-outline-primary text-primary' href="{% url 'transport_scolaire:bus-detail' bus.pk %}"><i class='fa-solid fa-eye'></i></a>
+                  <a class='update btn btn-outline-secondary text-secondary' href="{% url 'transport_scolaire:bus-update' bus.pk %}"><i class='fa-solid fa-pen-to-square'></i></a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:bus-delete' bus.pk %}"><i class='fa-solid fa-trash-can'></i></a>
+               </td>
+            </tr>
+         {% endfor %}
+         </tbody>
+      </table>
+   </div>
+
+<div class="panigation">
+            <span>
+               <span>
+                   Page {{ buss.number }} sur {{ buss.paginator.num_pages }}.
+
+               </span>
+               {% if buss.has_previous %}
+                   <a href="?page=1">premiere</a>
+                   <a href="?page={{ buss.previous_page_number }}">precedente</a>
+               {% endif %}
+
+
+               {% if buss.has_next %}
+                   <a href="?page={{ buss.next_page_number }}">suivante</a>
+
+                   <a href="?page={{ buss.paginator.num_pages }}">derniere</a>
+               {% endif %}
+           </span>
+       </div>
+  
+{% endblock content %}

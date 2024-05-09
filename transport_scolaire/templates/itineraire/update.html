@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Edit Itineraire</h3></div>
+{% endblock title %}
+{% block style %}
+
+<style>
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding:20px 50px;
+      border-radius: 5px;
+      width: 100%;
+      max-width: 700px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .popup-buttons button {
+      margin-left: 10px;
+    }
+    .btn-search{
+      position: absolute;
+      right: 0px;
+      top: -9px;
+    }
+    .pop-search{
+      padding: 3px 3px;
+    }
+  </style>
+
+
+{% endblock style %}
+{% block content %}
+   <form class='form-container inline-tab' method='POST' enctype='multipart/form-data'>
+      <div class='actions'>
+      <a href='{% url 'transport_scolaire:itineraire-list' %}'  class='btn btn-outline-primary text-primary'>
+         <i class="fa-solid fa-list-ul"></i> <span style="margin-left:10px;">List</span>   </a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:itineraire-delete' object.pk %}"><i class='fa-solid fa-trash-can'></i><span style="margin-left:10px;">Delete</span></a>
+      {% csrf_token %}
+      </div>
+      <div>
+         <label for="date_itineraire">date_itineraire :</label>
+         {{ form.date_itineraire }}
+         {% for error in form.date_itineraire.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="ligne">ligne :</label>
+         {{ form.ligne }}
+         {% for error in form.ligne.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="ligne_inverse">ligne_inverse :</label>
+         {{ form.ligne_inverse }}
+         {% for error in form.ligne_inverse.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+         <h3>BusAssignations</h3>
+         <table class='table' id='table-BusAssignation'>
+            <thead>
+            <th>date_assignation</th>
+            <th>bus</th>
+            <th>Actions</th>
+            </thead>
+            <tbody id='table-tbody-BusAssignation'>
+            </tbody>
+         </table>
+      <button class="btn btn-outline-success" id="btn-add-line-transport_scolaire-BusAssignation"><i class="fas fa-plus"></i><span>add-line</span></button>
+         <h3>Horaires</h3>
+         <table class='table' id='table-Horaire'>
+            <thead>
+            <th>pointArret</th>
+            <th>heureDebut</th>
+            <th>heureFin</th>
+            <th>Actions</th>
+            </thead>
+            <tbody id='table-tbody-Horaire'>
+            </tbody>
+         </table>
+      <button class="btn btn-outline-success" id="btn-add-line-transport_scolaire-Horaire"><i class="fas fa-plus"></i><span>add-line</span></button>
+      <button type='submit' class='btn btn-primary text-white' >update</button>
+   </form>
+{% endblock content %}
+{% block script %}
+
+<script>
+    const app = Vue.createApp({
+      data() {
+        return {
+
+                }
+            },
+      methods: {
+
+      },
+    
+      mounted() {
+
+      }
+    })
+
+    app.mount('#app')
+  </script>
+   <script>
+   console.log("Hello World Generator")
+   
+   let dataBus=[];
+   function fetchDataBus() {
+      fetch("/api/transport_scolaire/buss/?paginate=false")
+      .then(response => response.json())
+      .then(data => {
+         indicatorBus=true;
+         dataBus=data;
+         console.log(data);
+      })
+      .catch(error => console.error(error));
+      }
+   fetchDataBus();
+   function createOptionsBus() {
+      let options = "";
+         options += `<option value="">-------------</option>`;
+      dataBus.forEach(item => {
+         options += `<option value="${item.pk}">${item.repr}</option>`;
+      });
+      return options;
+   }
+   let dataLieuLigne=[];
+   function fetchDataLieuLigne() {
+      fetch("/api/transport_scolaire/lieulignes/?paginate=false")
+      .then(response => response.json())
+      .then(data => {
+         indicatorLieuLigne=true;
+         dataLieuLigne=data;
+         console.log(data);
+      })
+      .catch(error => console.error(error));
+      }
+   fetchDataLieuLigne();
+   function createOptionsLieuLigne() {
+      let options = "";
+         options += `<option value="">-------------</option>`;
+      dataLieuLigne.forEach(item => {
+         options += `<option value="${item.pk}">${item.repr}</option>`;
+      });
+      return options;
+   }
+   function createLigneBusAssignation(event,dataLigne) {
+      try {
+         event.preventDefault();
+      } catch (error) {
+      }
+
+      let tr = document.createElement("tr");
+
+      let id_busassignation=document.createElement("input");
+      id_busassignation.type = "hidden";
+      if(dataLigne){
+
+      id_busassignation.value=dataLigne.pk;
+      }else{
+
+      id_busassignation.value=null;
+      }
+      tr.appendChild(id_busassignation);
+      id_busassignation.name="busassignation[]";
+      let td_date_assignation = document.createElement("td");
+      let input_date_assignation = document.createElement("input");
+      input_date_assignation.type = "text";
+      input_date_assignation.name = "date_assignation[]";
+      input_date_assignation.placeholder = "date_assignation";
+      if(dataLigne){
+         input_date_assignation.value=dataLigne.date_assignation;
+      }      td_date_assignation.appendChild(input_date_assignation);
+
+      tr.appendChild(td_date_assignation);
+
+      let td_bus = document.createElement("td");
+      let select_bus = document.createElement("select");
+      select_bus.name = "bus[]";
+      select_bus.placeholder = "bus";
+      select_bus.innerHTML = createOptionsBus();
+      if(dataLigne){
+         for (var i = 0; i < select_bus.options.length; i++) {
+            if (select_bus.options[i].value == dataLigne.bus.pk) {
+               select_bus.selectedIndex = i;
+               break;
+            }
+         }
+      }
+      console.log(createOptionsBus());
+      td_bus.appendChild(select_bus);
+      tr.appendChild(td_bus);
+
+      let td_btnSuprLigne = document.createElement("td");
+      let iconSuprLigne = document.createElement("i");
+      iconSuprLigne.className = "fa-solid fa-x fa-xl";
+      iconSuprLigne.style.color = "#ff0000";
+      iconSuprLigne.addEventListener("click", function() {
+         tr.remove();
+      });
+      td_btnSuprLigne.appendChild(iconSuprLigne);
+      tr.appendChild(td_btnSuprLigne);
+      document.getElementById("table-tbody-BusAssignation").appendChild(tr);
+   }
+   document.getElementById("btn-add-line-transport_scolaire-BusAssignation").addEventListener("click", createLigneBusAssignation);
+   function fetchLigneBusAssignation(){
+   fetch("/api/transport_scolaire/itineraires/{{object.pk}}")
+   .then(response => response.json())
+   .then(data => {
+      dataLigneBusAssignation=data.busassignations;
+      for (let i = 0; i < dataLigneBusAssignation.length; i++) {
+         createLigneBusAssignation(null,dataLigneBusAssignation[i]);
+      }
+      console.log(data);
+      })
+      .catch(error => console.error(error));
+      }
+      fetchLigneBusAssignation();
+   function createLigneHoraire(event,dataLigne) {
+      try {
+         event.preventDefault();
+      } catch (error) {
+      }
+
+      let tr = document.createElement("tr");
+
+      let id_horaire=document.createElement("input");
+      id_horaire.type = "hidden";
+      if(dataLigne){
+
+      id_horaire.value=dataLigne.pk;
+      }else{
+
+      id_horaire.value=null;
+      }
+      tr.appendChild(id_horaire);
+      id_horaire.name="horaire[]";
+      let td_pointArret = document.createElement("td");
+      let select_pointArret = document.createElement("select");
+      select_pointArret.name = "pointArret[]";
+      select_pointArret.placeholder = "pointArret";
+      select_pointArret.innerHTML = createOptionsLieuLigne();
+      if(dataLigne){
+         for (var i = 0; i < select_pointArret.options.length; i++) {
+            if (select_pointArret.options[i].value == dataLigne.pointArret.pk) {
+               select_pointArret.selectedIndex = i;
+               break;
+            }
+         }
+      }
+      console.log(createOptionsLieuLigne());
+      td_pointArret.appendChild(select_pointArret);
+      tr.appendChild(td_pointArret);
+
+      let td_heureDebut = document.createElement("td");
+      let input_heureDebut = document.createElement("input");
+      input_heureDebut.type = "text";
+      input_heureDebut.name = "heureDebut[]";
+      input_heureDebut.placeholder = "heureDebut";
+      if(dataLigne){
+         input_heureDebut.value=dataLigne.heureDebut;
+      }      td_heureDebut.appendChild(input_heureDebut);
+
+      tr.appendChild(td_heureDebut);
+
+      let td_heureFin = document.createElement("td");
+      let input_heureFin = document.createElement("input");
+      input_heureFin.type = "text";
+      input_heureFin.name = "heureFin[]";
+      input_heureFin.placeholder = "heureFin";
+      if(dataLigne){
+         input_heureFin.value=dataLigne.heureFin;
+      }      td_heureFin.appendChild(input_heureFin);
+
+      tr.appendChild(td_heureFin);
+
+      let td_btnSuprLigne = document.createElement("td");
+      let iconSuprLigne = document.createElement("i");
+      iconSuprLigne.className = "fa-solid fa-x fa-xl";
+      iconSuprLigne.style.color = "#ff0000";
+      iconSuprLigne.addEventListener("click", function() {
+         tr.remove();
+      });
+      td_btnSuprLigne.appendChild(iconSuprLigne);
+      tr.appendChild(td_btnSuprLigne);
+      document.getElementById("table-tbody-Horaire").appendChild(tr);
+   }
+   document.getElementById("btn-add-line-transport_scolaire-Horaire").addEventListener("click", createLigneHoraire);
+   function fetchLigneHoraire(){
+   fetch("/api/transport_scolaire/itineraires/{{object.pk}}")
+   .then(response => response.json())
+   .then(data => {
+      dataLigneHoraire=data.horaires;
+      for (let i = 0; i < dataLigneHoraire.length; i++) {
+         createLigneHoraire(null,dataLigneHoraire[i]);
+      }
+      console.log(data);
+      })
+      .catch(error => console.error(error));
+      }
+      fetchLigneHoraire();
+   </script>
+{% endblock script %}

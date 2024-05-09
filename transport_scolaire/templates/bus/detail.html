@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Bus</h3></div>
+{% endblock title %}
+{% block content %}
+   <div class='actions'>
+      <a href='{% url 'transport_scolaire:bus-list' %}'  class='btn btn-outline-primary text-primary'>
+         <i class="fa-solid fa-list-ul"></i> <span style="margin-left:10px;">List</span>   </a>
+                  <a class='update btn btn-outline-secondary text-secondary' href="{% url 'transport_scolaire:bus-update' object.pk %}"><i class='fa-solid fa-pen-to-square'></i><span style="margin-left:10px;">Edit</span></a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:bus-delete' object.pk %}"><i class='fa-solid fa-trash-can'></i><span style="margin-left:10px;">Delete</span></a>
+   </div>
+   <div class='table-responsive'>
+      <table class='table'>
+         <tbody>
+            <tr>
+               <td>immatriculation</td><td>{{object.immatriculation}}</td>
+            </tr>
+            <tr>
+               <td>type</td><td>{{object.type}}</td>
+            </tr>
+            <tr>
+               <td>chauffeur</td><td>{{object.chauffeur}}</td>
+            </tr>
+            <tr>
+               <td>couleur</td><td>{{object.couleur}}</td>
+            </tr>
+            <tr>
+               <td>nbr_place</td><td>{{object.nbr_place}}</td>
+            </tr>
+         </tbody>
+      </table>
+   </div>
+{% endblock content %}

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+     <link rel='stylesheet' type='text/css' media='screen' href="{% static 'products/css/product_list.css' %}">
+     <link rel='stylesheet' type='text/css' media='screen' href="{% static 'products/css/dashboard.css' %}">
+{% endblock style %}
+{% block content %}
+<section class="dashboard home-section active">
+    <nav>
+        <div class="side-bar-button">
+            <i class="fa-solid fa-bars sidebarBtn"></i>
+
+            <span class="dashboard">Admin</span>
+        </div>
+        <form class="search-box " method="GET" >
+            <input type="text" placeholder="Search..." name="q" value={{search_query}}>
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+        </form>
+        <div class="profile-detail">
+            {% if user.profile_photo %}
+                   <img src="{{ user.profile_photo.url }}">
+                {% else %}
+                   <img src="{% static 'default-user-profile.jpg' %}" alt="">
+                {% endif %}
+            <span class="admin-name">{{user.username}}</span>
+            <i class="bx bx-chevron-down"></i>
+        </div>
+    </nav>
+    <div class="home_content">
+      <div class="overview-boxes">
+                <div class="box">
+                    <div class="left-side">
+                        <div class="box-topic">
+                           total  {{ produits_par_categorie.0.name }}
+                        </div>
+                        <div class="number">{{ produits_par_categorie.0.num_produits }}</div>
+                        <div class="indicator">
+                            <i class="fa-solid fa-circle-up"></i>
+                            <span class="text">depuis hier</span>
+                        </div>
+
+                    </div>
+
+                    <i class="fa-solid fa-box cart "></i>
+                </div>
+                <div class="box">
+                    <div class="left-side">
+                        <div class="box-topic">
+                             total  {{ produits_par_categorie.1.name }}
+                        </div>
+                        <div class="number">{{ produits_par_categorie.1.num_produits }}</div>
+                        <div class="indicator">
+                            <i class="fa-solid fa-circle-up"></i>
+                            <span class="text">depuis hier</span>
+                        </div>
+
+                    </div>
+                    <i class="fa-solid fa-box cart two"></i>
+
+                </div>
+                <div class="box">
+                    <div class="left-side">
+                        <div class="box-topic">
+                             total {{ produits_par_categorie.2.name }}
+                        </div>
+                        <div class="number">{{ produits_par_categorie.2.num_produits }}</div>
+                        <div class="indicator">
+                            <i class="fa-solid fa-circle-up"></i>
+                            <span class="text">depuis hier</span>
+                        </div>
+
+                    </div>
+                    <i class="fa-solid fa-box cart three"></i>
+                </div>
+                <div class="box">
+                    <div class="left-side">
+                        <div class="box-topic">
+                             total {{ produits_par_categorie.3.name }}
+                        </div>
+                        <div class="number">{{ produits_par_categorie.3.num_produits }}</div>
+                        <div class="indicator">
+                            <i class="fa-solid fa-circle-up"></i>
+                            <span class="text">depuis hier</span>
+                        </div>
+
+                    </div>
+                    <i class="fa-solid fa-box cart four"></i>
+                </div>
+            </div>
+        <div class="list-object">
+            <div class="action">
+                <div class="btn-add">
+                   <a href="{% url 'user_create' %}">nouveau user</a>
+                </div>
+            </div>
+            <table>
+                <thead>
+                   <tr>
+                        <th>Utilisateur</th>
+                        <th>Email</th>
+                        <th>Photo de profil</th>
+                        <th>Rôle</th>
+                        <th>Date de création</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.phone_number }}</td>
+                            <td>{{ user.role }}</td>
+
+                            <td>{{ user.date_joined }}</td>
+                            <td>
+                                <a class='see' href="{% url 'user_update' user.id %}"><i class='fa-solid fa-eye'></i></a>
+                                <a class='update'  href="{% url 'user_update' user.id %}"><i class='fa-solid fa-pen-to-square'></i></a>
+                                <a class='delete'  href="{% url 'user_delete' user.id %}"><i class='fa-solid fa-trash-can'></i></a>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="panigation">
+            <span>
+               <span>
+                   Page {{ users.number }} sur {{ users.paginator.num_pages }}.
+
+               </span>
+               {% if users.has_previous %}
+                   <a href="?page=1">premiere</a>
+                   <a href="?page={{ users.previous_page_number }}">precedente</a>
+               {% endif %}
+
+
+               {% if users.has_next %}
+                   <a href="?page={{ users.next_page_number }}">suivante</a>
+
+                   <a href="?page={{ users.paginator.num_pages }}">derniere</a>
+               {% endif %}
+           </span>
+       </div>
+    </div>
+</section>
+{% endblock %}

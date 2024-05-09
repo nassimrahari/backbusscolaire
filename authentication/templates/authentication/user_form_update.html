@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+     <link rel='stylesheet' type='text/css' media='screen' href="{% static 'products/css/product_form.css' %}">
+{% endblock style %}
+{% block content %}
+<section class="dashboard home-section active">
+    <nav>
+        <div class="side-bar-button">
+            <i class="fa-solid fa-bars sidebarBtn"></i>
+        
+            <span class="dashboard">Admin</span>
+        </div>
+        <div class="search-box">
+            <input type="text" placeholder="Search...">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            
+        </div>
+        <div class="profile-detail">
+            {% if user.profile_photo %}
+                   <img src="{{ user.profile_photo.url }}">
+                {% else %}
+                   <img src="{% static 'default-user-profile.jpg' %}" alt="">
+                {% endif %}
+            <span class="admin-name">{{user.username}}</span>
+            <i class="bx bx-chevron-down"></i>
+        </div>
+    </nav>  
+    <div class="home_content">
+        <h1>Modification</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Enregistrer les modifications</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

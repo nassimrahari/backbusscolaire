@@ -1,0 +1,313 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Hello !{% endblock %}
+
+
+{% block style %}
+<style>
+    .graphe{
+        display: flex !important;
+        flex-direction: column;
+    }
+    .graphe div{
+        border: 1px solid red !important;
+    }
+    .c-container{
+        display: flex;
+        justify-content: space-around;
+    }
+    
+    .canvas-container {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+    
+    /* Styles pour les graphiques */
+    canvas {
+        display: block;
+        margin: 0 auto;
+    }
+    
+
+ .home-section .overview-boxes{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 10px;
+    flex-wrap: wrap;
+}
+.home-section .overview-boxes .box-topic{
+    font-size: 15px;
+    font-weight: 500;
+}
+.home-section .overview-boxes .box{
+   height: 100px;
+    width:calc(100% /4 - 28px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   background-color: #fff;
+   padding: 15px 14px;
+   border-radius: 12px;
+   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+   /*box-shadow: 0 0 0px 1px rgba(0, 255, 255, 0.3),
+      1px 2px 3px 3px  rgba(0, 255, 255, 0.3),
+      2px 3px 9px 10px rgba(0, 255, 255, 0.3);*/
+}
+.home-section .overview-boxes .number{
+   font-size: 25px;
+    font-weight: 200;
+    margin-top: -2px;
+    display: inline-block;
+}
+.home-section .overview-boxes .indicator{
+    display: flex;
+    align-items: center;
+}
+.home-section .overview-boxes .indicator i{
+   height: 20px;
+   width: 20px;
+   color: #8FDACB;
+   background-color: #fff;
+   border-radius: 50%;
+   font-size: 20px;
+   margin-right: 5px;
+}
+.home-section .overview-boxes .indicator text{
+   font-size: 12px;
+}
+.home-section .overview-boxes .box .cart{
+    font-size: 32px;
+    
+    height: 50px;
+    width: 50px;
+    background-color: #cce5ff;
+    color: #66b0ff;
+    line-height: 50px;
+    text-align: center;
+    border-radius: 12px;
+}
+.home-section .overview-boxes .box .cart.two{
+   color: #2BD47D;
+   background-color: #C0F2D8;
+
+}
+.home-section .overview-boxes .box .cart.three{
+   background-color: #ffe8b3;
+   color: #ffc233;
+}
+.home-section .overview-boxes .box .cart.four{
+   color: #e05260;
+   background-color: #f7d4d7;
+}
+</style>
+
+{% endblock style %}
+{% block content %}
+<div class="overview-boxes">
+    <div class="box">
+        <div class="left-side">
+            <div class="box-topic">
+                vente         
+            </div>
+            <div class="number"> {{countVente}}</div>
+            <div class="indicator">
+                <i class="fa-solid fa-circle-up">
+                   
+                </i>
+              
+            </div>
+           
+        </div>
+        <i class="fa-solid fa-wallet cart"></i>
+    </div>
+    <div class="box">
+        <div class="left-side">
+            <div class="box-topic">
+                Produit en rupture de stock        
+            </div>
+            <div class="number">{{statusProduitsData.2}}</div>
+            <div class="indicator">
+                <i class="fa-solid fa-circle-up"></i>
+               
+            </div>
+           
+        </div>
+        <i class="fa-solid fa-plus cart two"></i>
+    </div>
+    <div class="box">
+        <div class="left-side">
+            <div class="box-topic">
+               Produit surcharcge de stock    
+            </div>
+            <div class="number">{{statusProduitsData.1}}</div>
+            <div class="indicator">
+                <i class="fa-solid fa-circle-up"></i>
+                <span class="text">depuis hier</span>
+            </div>
+           
+        </div>
+        <i class="fa-solid fa-plus cart three"></i>
+    </div>
+    <div class="box">
+        <div class="left-side">
+            <div class="box-topic">
+                Achat 
+            </div>
+            <div class="number">{{countAchat}}</div>
+            <div c-lass="indicator">
+                <i class="fa-solid fa-circle-up"></i>
+                <span class="text"></span>
+            </div>
+           
+        </div>
+        <i class="fa-solid fa-minus cart four"></i>
+    </div>
+</div>
+<!-- sales content -->
+<br>
+<p> Graphique Montant Total Vente Par Date:</p>
+<!-- <div class="graphe">
+    <canvas id='debitChart' style="max-width:50%; height:500px;">
+
+    </canvas>
+
+
+
+    
+</div> -->
+<h2>Graphiques</h2>
+    <div class="c-container">
+        <div class="canvas-container">
+            <canvas id="debitChart" width="300" height="300"></canvas>
+        </div>
+        <div class="canvas-container">
+            <canvas id="complaintsByStatusChart" width="300" height="300"></canvas>
+        </div>
+        <div class="canvas-container">
+            <canvas id="complaintsChart" width="300" height="300"></canvas>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script src="{% static "js/chart.js" %}"></script>
+<script src="{% static "js/moment.min.js" %}"></script>
+<script>
+    
+
+// Utiliser les données décryptées
+dataChiffreDaffaire=[
+['2024-02-01', 1539000],
+['2024-02-06', 630000],
+['2024-02-02', 26000],
+['2023-08-18', 30000],
+['2024-01-24', 30000],
+['2023-08-19', 60000],
+['2024-02-22', 810000]
+]
+var times_data = dataChiffreDaffaire.map(function(data) {
+       
+       return {
+        x: data[0],
+        y: data[1],
+       }
+});
+console.log(times_data)
+const ctx = document.getElementById('debitChart');
+let chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        datasets: [{
+            label: "chiffre d'affaire par date", // LÃ©gende de la courbes
+            data: times_data,
+            borderColor: 'hsl(225, 60%, 50%)', // Couleur de la courbe
+            pointBackgroundColor: 'hsl(216, 100%, 35%)', // Couleur des points de donnÃ©es
+            pointRadius: 5, // Taille des points de donnÃ©es
+            pointHoverBackgroundColor: 'hsl(0, 25%, 0%)', // Couleur des points au survol
+            pointHoverRadius: 7 // Taille des points au survol
+        }],
+    },
+    
+
+    options: {
+        scales: {
+            x: {
+                min: '2022-11-07',
+                scaleLabel: {
+                    display: true,
+                    labelString: "chiffre d'affaire " // Nom de l'axe des abscisses
+                }
+            },
+            y: {
+                scaleLabel: {
+                    display: true,
+                    labelString: 'Jour' // Nom de l'axe des ordonnÃ©es
+                }
+            }
+        }
+    }
+});
+
+
+        let dataStatusData=[
+            5,6,8,9
+        ]
+        // Exemple de graphique avec Chart.js
+        const complaintsByStatusData = {
+            labels: ['En surcharge', 'En rupture', 'normale',],
+            datasets: [{
+                label: 'statut produit',
+                data: [
+                   dataStatusData[1] , 
+                   dataStatusData[2] , 
+                   dataStatusData[3] 
+                ],
+                backgroundColor: ['rbga(0,0,0,0.1)', 'rgb(233,69,84)', '#4D509E',]
+            }]
+        };
+
+        const complaintsByStatusChart = new Chart(document.getElementById('complaintsByStatusChart'), {
+            type: 'pie',
+            data: complaintsByStatusData,
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Obtenez les valeurs de la moyenne des plaintes par client et du pourcentage de plaintes résolues
+        const countClientData = 50;
+        const countFournisseurData = 3;
+
+        // Créez les données pour le graphique
+        const complaintsData = {
+            labels: ['client', 'fournisseur'],
+            datasets: [{
+                label: 'Fournisseur et client',
+                data: [countClientData, countFournisseurData],
+                backgroundColor: ['blue', 'green']
+            }]
+        };
+
+        // Configurez le graphique
+        const complaintsChart = new Chart(document.getElementById('complaintsChart'), {
+            type: 'bar',
+            data: complaintsData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+</script>
+{% endblock script %}

@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Edit BusAssignation</h3></div>
+{% endblock title %}
+{% block style %}
+
+<style>
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding:20px 50px;
+      border-radius: 5px;
+      width: 100%;
+      max-width: 700px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .popup-buttons button {
+      margin-left: 10px;
+    }
+    .btn-search{
+      position: absolute;
+      right: 0px;
+      top: -9px;
+    }
+    .pop-search{
+      padding: 3px 3px;
+    }
+  </style>
+
+
+{% endblock style %}
+{% block content %}
+   <form class='form-container ' method='POST' enctype='multipart/form-data'>
+      <div class='actions'>
+      <a href='{% url 'transport_scolaire:busassignation-list' %}'  class='btn btn-outline-primary text-primary'>
+         <i class="fa-solid fa-list-ul"></i> <span style="margin-left:10px;">List</span>   </a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:busassignation-delete' object.pk %}"><i class='fa-solid fa-trash-can'></i><span style="margin-left:10px;">Delete</span></a>
+      {% csrf_token %}
+      </div>
+      <div>
+         <label for="date_assignation">date_assignation :</label>
+         {{ form.date_assignation }}
+         {% for error in form.date_assignation.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="bus">bus :</label>
+         {{ form.bus }}
+         {% for error in form.bus.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="itineraire">itineraire :</label>
+         {{ form.itineraire }}
+         {% for error in form.itineraire.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <button type='submit' class='btn btn-primary text-white' >update</button>
+   </form>
+{% endblock content %}
+{% block script %}
+
+<script>
+    const app = Vue.createApp({
+      data() {
+        return {
+
+                }
+            },
+      methods: {
+
+      },
+    
+      mounted() {
+
+      }
+    })
+
+    app.mount('#app')
+  </script>
+   <script>
+   console.log("Hello World Generator")
+   
+   </script>
+{% endblock script %}

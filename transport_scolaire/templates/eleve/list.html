@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Eleve List</h3></div>
+{% endblock title %}
+{% block content %}
+   <div class='actions'>
+      <a href='{% url 'transport_scolaire:eleve-create' %}' class='btn btn-primary text-white'>
+         Add New eleve
+   </a>
+   </div>
+   <form class='form-search'  method='GET'>
+   <div class='content-search'>
+         <div class='d-flex group flex-column '>         <label>Start date_inscription</label>            <input type='date' placeholder='date' value='{{search_filter_date_inscription_gte}}'  name='search_filter_date_inscription_gte'>
+         </div>         <div class='d-flex group flex-column '>         <label>End date_inscription</label>            <input type='date' value='{{search_filter_date_inscription_lte}}'  name='search_filter_date_inscription_lte'>
+         </div>         <div class='d-flex group flex-column '>         <label>Start date_naissance</label>            <input type='date' placeholder='date' value='{{search_filter_date_naissance_gte}}'  name='search_filter_date_naissance_gte'>
+         </div>         <div class='d-flex group flex-column '>         <label>End date_naissance</label>            <input type='date' value='{{search_filter_date_naissance_lte}}'  name='search_filter_date_naissance_lte'>
+         </div>         <div class='d-flex group flex-column '>            <label>ligne</label>            <select type='text'  name='search_filter_ligne'>
+<option value=''>-----------</option>{% for ligne in lignes %}
+<option {% if search_filter_ligne|stringformat:"s" == ligne.pk|stringformat:"s" %}selected{% endif %}  value='{{ligne.pk}}'>{{ligne}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <div class='d-flex group flex-column '>            <label>parent</label>            <select type='text'  name='search_filter_parent'>
+<option value=''>-----------</option>{% for parent in parents %}
+<option {% if search_filter_parent|stringformat:"s" == parent.pk|stringformat:"s" %}selected{% endif %}  value='{{parent.pk}}'>{{parent}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <div class='d-flex group flex-column '>            <label>ecole</label>            <select type='text'  name='search_filter_ecole'>
+<option value=''>-----------</option>{% for ecole in ecoles %}
+<option {% if search_filter_ecole|stringformat:"s" == ecole.pk|stringformat:"s" %}selected{% endif %}  value='{{ecole.pk}}'>{{ecole}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <div class='d-flex group flex-column '>            <label>classe</label>            <select type='text'  name='search_filter_classe'>
+<option value=''>-----------</option>{% for classe in classes %}
+<option {% if search_filter_classe|stringformat:"s" == classe.pk|stringformat:"s" %}selected{% endif %}  value='{{classe.pk}}'>{{classe}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <div class='d-flex group flex-column '>            <label>lieu_ramassage</label>            <select type='text'  name='search_filter_lieu_ramassage'>
+<option value=''>-----------</option>{% for lieu_ramassage in lieu_ramassages %}
+<option {% if search_filter_lieu_ramassage|stringformat:"s" == lieu_ramassage.pk|stringformat:"s" %}selected{% endif %}  value='{{lieu_ramassage.pk}}'>{{lieu_ramassage}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <button type='submit' class='btn btn-primary sub-2 text-white' >Search</button>
+   </div>
+   </form>
+   <form class='form-search'  method='GET'>
+         <input type='text' name='search_query' value='{{search_query}}' placeholder='search...'>
+         <button type='submit' class='btn btn-primary text-white' >Search</button>
+   </form>
+   <div class='table-responsive'>
+      <table class='table'>
+         <thead>
+            <tr>
+               <th>N°</th>
+               <th>date_inscription</th>
+               <th>date_naissance</th>
+               <th>image</th>
+               <th>nom</th>
+               <th>prenoms</th>
+               <th>adresse</th>
+               <th>ligne</th>
+               <th>parent</th>
+               <th>user</th>
+               <th>ecole</th>
+               <th>classe</th>
+               <th>lieu_ramassage</th>
+               <th>montant_frais</th>
+               <th>etat</th>
+               <th>Actions<th>
+            </tr>
+         </thead>
+         <tbody>
+         {% for eleve in eleves %}
+            <tr>
+               <td>{{ eleve.pk }}</td>
+               <td>{{ eleve.date_inscription }}</td>
+               <td>{{ eleve.date_naissance }}</td>
+               <td><img src='{{ eleve.image.url }}' alt='image'></td>
+               <td>{{ eleve.nom }}</td>
+               <td>{{ eleve.prenoms }}</td>
+               <td>{{ eleve.adresse }}</td>
+               <td>{{ eleve.ligne }}</td>
+               <td>{{ eleve.parent }}</td>
+               <td>{{ eleve.user }}</td>
+               <td>{{ eleve.ecole }}</td>
+               <td>{{ eleve.classe }}</td>
+               <td>{{ eleve.lieu_ramassage }}</td>
+               <td>{{ eleve.montant_frais }}</td>
+               <td>{{ eleve.etat }}</td>
+               <td class='col-actions'>
+                  <a class='see btn btn-outline-primary text-primary' href="{% url 'transport_scolaire:eleve-detail' eleve.pk %}"><i class='fa-solid fa-eye'></i></a>
+                  <a class='update btn btn-outline-secondary text-secondary' href="{% url 'transport_scolaire:eleve-update' eleve.pk %}"><i class='fa-solid fa-pen-to-square'></i></a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:eleve-delete' eleve.pk %}"><i class='fa-solid fa-trash-can'></i></a>
+               </td>
+            </tr>
+         {% endfor %}
+         </tbody>
+      </table>
+   </div>
+
+<div class="panigation">
+            <span>
+               <span>
+                   Page {{ eleves.number }} sur {{ eleves.paginator.num_pages }}.
+
+               </span>
+               {% if eleves.has_previous %}
+                   <a href="?page=1">premiere</a>
+                   <a href="?page={{ eleves.previous_page_number }}">precedente</a>
+               {% endif %}
+
+
+               {% if eleves.has_next %}
+                   <a href="?page={{ eleves.next_page_number }}">suivante</a>
+
+                   <a href="?page={{ eleves.paginator.num_pages }}">derniere</a>
+               {% endif %}
+           </span>
+       </div>
+  
+{% endblock content %}

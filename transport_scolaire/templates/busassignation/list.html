@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>BusAssignation List</h3></div>
+{% endblock title %}
+{% block content %}
+   <div class='actions'>
+      <a href='{% url 'transport_scolaire:busassignation-create' %}' class='btn btn-primary text-white'>
+         Add New busassignation
+   </a>
+   </div>
+   <form class='form-search'  method='GET'>
+   <div class='content-search'>
+         <div class='d-flex group flex-column '>         <label>Start date_assignation</label>            <input type='date' placeholder='date' value='{{search_filter_date_assignation_gte}}'  name='search_filter_date_assignation_gte'>
+         </div>         <div class='d-flex group flex-column '>         <label>End date_assignation</label>            <input type='date' value='{{search_filter_date_assignation_lte}}'  name='search_filter_date_assignation_lte'>
+         </div>         <div class='d-flex group flex-column '>            <label>bus</label>            <select type='text'  name='search_filter_bus'>
+<option value=''>-----------</option>{% for bus in buss %}
+<option {% if search_filter_bus|stringformat:"s" == bus.pk|stringformat:"s" %}selected{% endif %}  value='{{bus.pk}}'>{{bus}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <div class='d-flex group flex-column '>            <label>itineraire</label>            <select type='text'  name='search_filter_itineraire'>
+<option value=''>-----------</option>{% for itineraire in itineraires %}
+<option {% if search_filter_itineraire|stringformat:"s" == itineraire.pk|stringformat:"s" %}selected{% endif %}  value='{{itineraire.pk}}'>{{itineraire}}</option>{% endfor %}
+         <select type='text' name='search_filter'>
+         </div>         <button type='submit' class='btn btn-primary sub-2 text-white' >Search</button>
+   </div>
+   </form>
+   <form class='form-search'  method='GET'>
+         <input type='text' name='search_query' value='{{search_query}}' placeholder='search...'>
+         <button type='submit' class='btn btn-primary text-white' >Search</button>
+   </form>
+   <div class='table-responsive'>
+      <table class='table'>
+         <thead>
+            <tr>
+               <th>N°</th>
+               <th>date_assignation</th>
+               <th>bus</th>
+               <th>itineraire</th>
+               <th>Actions<th>
+            </tr>
+         </thead>
+         <tbody>
+         {% for busassignation in busassignations %}
+            <tr>
+               <td>{{ busassignation.pk }}</td>
+               <td>{{ busassignation.date_assignation }}</td>
+               <td>{{ busassignation.bus }}</td>
+               <td>{{ busassignation.itineraire }}</td>
+               <td class='col-actions'>
+                  <a class='see btn btn-outline-primary text-primary' href="{% url 'transport_scolaire:busassignation-detail' busassignation.pk %}"><i class='fa-solid fa-eye'></i></a>
+                  <a class='update btn btn-outline-secondary text-secondary' href="{% url 'transport_scolaire:busassignation-update' busassignation.pk %}"><i class='fa-solid fa-pen-to-square'></i></a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:busassignation-delete' busassignation.pk %}"><i class='fa-solid fa-trash-can'></i></a>
+               </td>
+            </tr>
+         {% endfor %}
+         </tbody>
+      </table>
+   </div>
+
+<div class="panigation">
+            <span>
+               <span>
+                   Page {{ busassignations.number }} sur {{ busassignations.paginator.num_pages }}.
+
+               </span>
+               {% if busassignations.has_previous %}
+                   <a href="?page=1">premiere</a>
+                   <a href="?page={{ busassignations.previous_page_number }}">precedente</a>
+               {% endif %}
+
+
+               {% if busassignations.has_next %}
+                   <a href="?page={{ busassignations.next_page_number }}">suivante</a>
+
+                   <a href="?page={{ busassignations.paginator.num_pages }}">derniere</a>
+               {% endif %}
+           </span>
+       </div>
+  
+{% endblock content %}

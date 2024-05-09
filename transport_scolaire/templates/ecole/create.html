@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Add Ecole</h3></div>
+{% endblock title %}
+{% block style %}
+
+<style>
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding:20px 50px;
+      border-radius: 5px;
+      width: 100%;
+      max-width: 700px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .popup-buttons button {
+      margin-left: 10px;
+    }
+    .btn-search{
+      position: absolute;
+      right: 0px;
+      top: -9px;
+    }
+    .pop-search{
+      padding: 3px 3px;
+    }
+  </style>
+
+
+{% endblock style %}
+{% block content %}
+   <form class='form-container inline-tab' method='POST' enctype='multipart/form-data'>
+      {% csrf_token %}
+      <div>
+         <label for="nom">nom :</label>
+         {{ form.nom }}
+         {% for error in form.nom.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+         <h3>Classes</h3>
+         <table class='table' id='table-Classe'>
+            <thead>
+            <th>nom</th>
+            <th>Actions</th>
+            </thead>
+            <tbody id='table-tbody-Classe'>
+            </tbody>
+         </table>
+      <button class="btn btn-outline-success" id="btn-add-line-transport_scolaire-Classe"><i class="fas fa-plus"></i><span>add-line</span></button>
+      <button type='submit' class='btn btn-primary text-white' >save</button>
+   </form>
+{% endblock content %}
+{% block script %}
+
+<script>
+    const app = Vue.createApp({
+      data() {
+        return {
+
+                }
+            },
+      methods: {
+
+      },
+    
+      mounted() {
+
+      }
+    })
+
+    app.mount('#app')
+  </script>
+   <script>
+   console.log("Hello World Generator")
+   
+   function createLigneClasse(event) {
+      try {
+         event.preventDefault();
+      } catch (error) {
+      }
+
+      let tr = document.createElement("tr");
+
+      let td_nom = document.createElement("td");
+      let input_nom = document.createElement("input");
+      input_nom.type = "text";
+      input_nom.name = "nom[]";
+      input_nom.placeholder = "nom";
+      td_nom.appendChild(input_nom);
+
+      tr.appendChild(td_nom);
+
+      let td_btnSuprLigne = document.createElement("td");
+      let iconSuprLigne = document.createElement("i");
+      iconSuprLigne.className = "fa-solid fa-x fa-xl";
+      iconSuprLigne.style.color = "#ff0000";
+      iconSuprLigne.addEventListener("click", function() {
+         tr.remove();
+      });
+      td_btnSuprLigne.appendChild(iconSuprLigne);
+      tr.appendChild(td_btnSuprLigne);
+      document.getElementById("table-tbody-Classe").appendChild(tr);
+   }
+   document.getElementById("btn-add-line-transport_scolaire-Classe").addEventListener("click", createLigneClasse);
+   </script>
+{% endblock script %}

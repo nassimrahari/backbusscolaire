@@ -1,0 +1,235 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Generator project</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static 'css/all.min.css' %}'>
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static 'css/fontawesome.min.css' %}'>
+    <link rel='stylesheet' href='{% static 'css/jquery-ui.min.css' %}'>
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static 'css/main.css' %}'>
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static 'css/form.css' %}'>
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static 'css/base.css' %}'>
+    <link rel='stylesheet' type='text/css' media='screen' href='{% static 'css/bootstrap.min.css' %}'>
+    {% comment %} <script src='{% static 'products/js/jquery.js' %}'></script> {% endcomment %}
+    <script src='{% static 'js/vue.global.js' %}'></script>
+    <script src='{% static 'js/axios.min.js' %}'></script>
+    {% block style %}
+
+    {% endblock style %}
+    <style>
+        img{
+           width:100%;
+        }
+     </style>
+ 
+</head>
+<body>
+    
+    <div class='side-bar'>
+        <div class='logo-detail'>
+            <div class="logo-img" >
+                     <img src='{% static 'image/logo.png' %}' />
+
+             </div>
+            <span class='logo_name'>
+               <span class="project">Project</span><span class="generator"> Genrator</span>
+            </span>
+        </div>
+        <ul class='nav-link'>
+            <div class='menu-item dashboard active'>
+                <a href='{% url 'dashboard' %}'>
+                    <i class='fa-solid fa-grip'></i>
+                    <span class='link_name'>Dashboard</span>
+                </a>
+            </div>
+
+            <div class='accordion' id='accordionExample'>
+                <div class='accordion-item'>
+                  <h2 class='accordion-header' id='headingOne'>
+                   
+                    <button class='accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseOne' aria-expanded='true' aria-controls='collapseOne'>
+<i class="fa-solid fa-square-poll-horizontal"></i> <span>transport_scolaire</span> 
+                    </button>
+                  </h2>
+                  <div id='collapseOne' class='accordion-collapse collapse ' style='background-color: #4D509E;color:#ffffff !important' aria-labelledby='headingOne' data-bs-parent='#accordionExample'>
+                    <div class='accordion-body'>
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:chauffeur-list' %}'>
+                                    <i class="fa-solid fa-square-poll-horizontal"></i>
+                                    <span class='link_name'>chauffeur</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:typevehicule-list' %}'>
+                                    <i class="fa-brands fa-lastfm"></i>
+                                    <span class='link_name'>typevehicule</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:bus-list' %}'>
+                                    <i class="fa-brands fa-pagelines"></i>
+                                    <span class='link_name'>bus</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:lieuligne-list' %}'>
+                                    <i class="fa-brands fa-lastfm"></i>
+                                    <span class='link_name'>lieuligne</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:ligne-list' %}'>
+                                    <i class="fa-solid fa-sheet-plastic"></i>
+                                    <span class='link_name'>ligne</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:lieuramassage-list' %}'>
+                                    <i class="fa-brands fa-pix"></i>
+                                    <span class='link_name'>lieuramassage</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:ordrelieu-list' %}'>
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <span class='link_name'>ordrelieu</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:ecole-list' %}'>
+                                    <i class="fa-brands fa-pix"></i>
+                                    <span class='link_name'>ecole</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:classe-list' %}'>
+                                    <i class="fa-regular fa-object-group"></i>
+                                    <span class='link_name'>classe</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:parent-list' %}'>
+                                    <i class="fa-brands fa-lastfm"></i>
+                                    <span class='link_name'>parent</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:eleve-list' %}'>
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <span class='link_name'>eleve</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:itineraire-list' %}'>
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    <span class='link_name'>itineraire</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:horaire-list' %}'>
+                                    <i class="fa-solid fa-list"></i>
+                                    <span class='link_name'>horaire</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:busassignation-list' %}'>
+                                    <i class="fa-brands fa-42-group"></i>
+                                    <span class='link_name'>busassignation</span>
+                                </a>
+                            </li> 
+
+                         <li class='submenu-item'>
+                                <a href='{% url 'transport_scolaire:assignationitineraire-list' %}'>
+                                    <i class="fa-solid fa-list"></i>
+                                    <span class='link_name'>assignationitineraire</span>
+                                </a>
+                            </li> 
+
+                
+                  </div>
+                </div>
+
+                            
+                </div>
+                    </div>
+
+              {% comment %} <form class='menu-item form-logout dashboard active' method='post' action='{% url 'logout' %}'>
+                    <div class='a'>
+                        {%csrf_token%}
+                
+                    <i class='fas fa-sign-out-alt'></i>
+                    <input type='submit' class='logout' class='link_name' value='Se deconnecter' >
+                </div>
+            </form> {% endcomment %}
+
+        </ul>
+    </div>
+
+    <section class='dashboard home-section active' id="app">
+        <nav>
+            <div class='side-bar-button'>
+                <i class='fa-solid fa-bars sidebarBtn' style="color:#fff;"></i>
+    
+                <span class='dashboard'></span>
+            </div>
+        
+            <div class='profile-detail'>
+                {% if user.profile_photo %}
+                       <img src='{{ user.profile_photo.url }}'>
+                    {% else %}
+                       <img src='{% static 'default-user-profile.jpg' %}' alt=''>
+                    {% endif %}
+                <span class='admin-name'>{{user.username}}</span>
+                <i class='bx bx-chevron-down'></i>
+            </div>
+        </nav>
+        <div class='home_content'>
+            <div class='title'>
+                {% block title %}
+                    <h4>Change Me !</h4>
+                {% endblock title %}
+                </div>
+            {% block content %}
+                <h4>Project Generator</h4>
+            {% endblock content %}
+        </div>
+    </section>
+    {% block modal %}
+
+    {% endblock modal %}
+
+
+   <script src='{% static 'js/jquery.js' %}'></script>
+        <script src='{% static 'js/script.js' %}'></script>
+        <script src='{% static 'js/jquery-ui.min.js' %}'></script>
+     <script src='{% static 'js/main.js' %}'></script>
+     <script src='{% static 'js/bootstrap.min.js' %}'></script>
+
+     {% block script %}
+
+    {% endblock script %}
+
+
+
+
+</body>
+</html>
+</html>

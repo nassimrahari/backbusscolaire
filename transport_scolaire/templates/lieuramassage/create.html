@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Add LieuRamassage</h3></div>
+{% endblock title %}
+{% block style %}
+
+<style>
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding:20px 50px;
+      border-radius: 5px;
+      width: 100%;
+      max-width: 700px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .popup-buttons {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .popup-buttons button {
+      margin-left: 10px;
+    }
+    .btn-search{
+      position: absolute;
+      right: 0px;
+      top: -9px;
+    }
+    .pop-search{
+      padding: 3px 3px;
+    }
+  </style>
+
+
+{% endblock style %}
+{% block content %}
+   <form class='form-container ' method='POST' enctype='multipart/form-data'>
+      {% csrf_token %}
+      <div>
+         <label for="nom_lieu">nom_lieu :</label>
+         {{ form.nom_lieu }}
+         {% for error in form.nom_lieu.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="latitude">latitude :</label>
+         {{ form.latitude }}
+         {% for error in form.latitude.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="longitude">longitude :</label>
+         {{ form.longitude }}
+         {% for error in form.longitude.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="ligne">ligne :</label>
+         {{ form.ligne }}
+         {% for error in form.ligne.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <div>
+         <label for="lieu_ligne">lieu_ligne :</label>
+         {{ form.lieu_ligne }}
+         {% for error in form.lieu_ligne.errors %}
+         <div class="text-danger">{{ error }}</div>
+         {% endfor %}
+      </div>
+      <button type='submit' class='btn btn-primary text-white' >save</button>
+   </form>
+{% endblock content %}
+{% block script %}
+
+<script>
+    const app = Vue.createApp({
+      data() {
+        return {
+
+                }
+            },
+      methods: {
+
+      },
+    
+      mounted() {
+
+      }
+    })
+
+    app.mount('#app')
+  </script>
+   <script>
+   console.log("Hello World Generator")
+   
+   </script>
+{% endblock script %}

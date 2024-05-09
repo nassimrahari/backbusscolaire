@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}
+   <div class='page_title'><h3>Eleve</h3></div>
+{% endblock title %}
+{% block content %}
+   <div class='actions'>
+      <a href='{% url 'transport_scolaire:eleve-list' %}'  class='btn btn-outline-primary text-primary'>
+         <i class="fa-solid fa-list-ul"></i> <span style="margin-left:10px;">List</span>   </a>
+                  <a class='update btn btn-outline-secondary text-secondary' href="{% url 'transport_scolaire:eleve-update' object.pk %}"><i class='fa-solid fa-pen-to-square'></i><span style="margin-left:10px;">Edit</span></a>
+                  <a class='delete btn btn-outline-danger text-danger' href="{% url 'transport_scolaire:eleve-delete' object.pk %}"><i class='fa-solid fa-trash-can'></i><span style="margin-left:10px;">Delete</span></a>
+   </div>
+   <div class='table-responsive'>
+      <table class='table'>
+         <tbody>
+            <tr>
+               <td>date_inscription</td><td>{{object.date_inscription}}</td>
+            </tr>
+            <tr>
+               <td>date_naissance</td><td>{{object.date_naissance}}</td>
+            </tr>
+            <tr>
+               <td>image</td><td>{{object.image}}</td>
+            </tr>
+            <tr>
+               <td>nom</td><td>{{object.nom}}</td>
+            </tr>
+            <tr>
+               <td>prenoms</td><td>{{object.prenoms}}</td>
+            </tr>
+            <tr>
+               <td>adresse</td><td>{{object.adresse}}</td>
+            </tr>
+            <tr>
+               <td>ligne</td><td>{{object.ligne}}</td>
+            </tr>
+            <tr>
+               <td>parent</td><td>{{object.parent}}</td>
+            </tr>
+            <tr>
+               <td>ecole</td><td>{{object.ecole}}</td>
+            </tr>
+            <tr>
+               <td>classe</td><td>{{object.classe}}</td>
+            </tr>
+            <tr>
+               <td>lieu_ramassage</td><td>{{object.lieu_ramassage}}</td>
+            </tr>
+            <tr>
+               <td>montant_frais</td><td>{{object.montant_frais}}</td>
+            </tr>
+            <tr>
+               <td>etat</td><td>{{object.etat}}</td>
+            </tr>
+         </tbody>
+      </table>
+   </div>
+{% endblock content %}

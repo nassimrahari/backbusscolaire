@@ -1,0 +1,26 @@
+{% extends 'authentication/base_auth.html' %}
+{% load static %}
+{% block style %}
+   <link rel='stylesheet' type='text/css' media='screen' href="{% static 'authentication/login.css' %}">
+{% endblock style %}
+{% block content %}
+    <p>{{ message }}</p>
+    <div class="container">
+        <h1>Authentification</h1>
+        <form method="post">
+            {% csrf_token %}
+            {% for field in form.visible_fields %}
+            <div class="form-group">
+                <label >{{ field.label }}</label>
+                {{ field }}
+            </div>
+            {% endfor %}
+            <button type="submit" >Se connecter</button>
+        </form>
+
+       {% comment %} <p>Pas encore membre ? <a href="{% url 'signup' %}">Inscrivez-vous maintenant !</a></p> {% endcomment %}
+        {% comment %}
+       {% endcomment %}
+    </div>
+
+{% endblock content %}
