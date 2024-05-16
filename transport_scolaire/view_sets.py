@@ -4,8 +4,8 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.db import transaction
 from rest_framework import viewsets
-from .models import ( Chauffeur , TypeVehicule , Bus , LieuLigne , Ligne , LieuRamassage , OrdreLieu , Ecole , Classe , Parent , Eleve , Itineraire , Horaire , BusAssignation , AssignationItineraire ,)
-from .serializers import (ChauffeurSerializer,TypeVehiculeSerializer,BusSerializer,LieuLigneSerializer,LigneSerializer,LieuRamassageSerializer,OrdreLieuSerializer,EcoleSerializer,ClasseSerializer,ParentSerializer,EleveSerializer,ItineraireSerializer,HoraireSerializer,BusAssignationSerializer,AssignationItineraireSerializer,)
+from .models import ( Chauffeur, EcoleAssignation , TypeVehicule , Bus , LieuLigne , Ligne , LieuRamassage , OrdreLieu , Ecole , Classe , Parent , Eleve , Itineraire , Horaire , BusAssignation , AssignationItineraire ,)
+from .serializers import (ChauffeurSerializer, EcoleAssignationDetailSerializer, EcoleAssignationSerializer,TypeVehiculeSerializer,BusSerializer,LieuLigneSerializer,LigneSerializer,LieuRamassageSerializer,OrdreLieuSerializer,EcoleSerializer,ClasseSerializer,ParentSerializer,EleveSerializer,ItineraireSerializer,HoraireSerializer,BusAssignationSerializer,AssignationItineraireSerializer,)
 from .serializers import (ChauffeurDetailSerializer,TypeVehiculeDetailSerializer,BusDetailSerializer,LieuLigneDetailSerializer,LigneDetailSerializer,LieuRamassageDetailSerializer,OrdreLieuDetailSerializer,EcoleDetailSerializer,ClasseDetailSerializer,ParentDetailSerializer,EleveDetailSerializer,ItineraireDetailSerializer,HoraireDetailSerializer,BusAssignationDetailSerializer,AssignationItineraireDetailSerializer,)
 from .serializers import (ChauffeurMinSerializer,TypeVehiculeMinSerializer,BusMinSerializer,LieuLigneMinSerializer,LigneMinSerializer,LieuRamassageMinSerializer,OrdreLieuMinSerializer,EcoleMinSerializer,ClasseMinSerializer,ParentMinSerializer,EleveMinSerializer,ItineraireMinSerializer,HoraireMinSerializer,BusAssignationMinSerializer,AssignationItineraireMinSerializer,)
 from .tasks import send_confirmation_email
@@ -18,6 +18,40 @@ from rest_framework.response import Response
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+
+class AssignationBusItineraireViewSet(APIView):
+     # permission_classes = [IsAuthenticated]
+     serializer = AssignationItineraire  # Remplacez UserSerializer par votre propre sérialiseur d'utilisateur
+
+     def get(self, request):
+               
+          return Response(request.data)
+          #    serialized_user = self.user_serializer(request.user).data
+          #    return Response({'token': 'Token is valid', 'user': serialized_user})
+     
+     
+
+     def post(self, request):
+          print(request.data)
+          try:
+               for ass in request.data:
+                    assignationItineraire = AssignationItineraire.objects.get(pk=ass.get('pk'))
+                    assignationItineraire.bus = Bus.objects.get(pk=ass.get('bus'))
+                    assignationItineraire.save()
+                    
+               return Response(AssignationItineraireSerializer(assignationItineraire).data)
+          
+          except AssignationItineraire.DoesNotExist:
+               return Response({'error': 'AssignationItineraire does not exist'}, status=status.HTTP_404_NOT_FOUND)
+          
+          except Bus.DoesNotExist:
+               return Response({'error': 'Bus does not exist'}, status=status.HTTP_404_NOT_FOUND)
+          
+          except BaseException as e:
+               return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+         
+
 
 class CountViewSet(APIView):
     def get(self, request):
@@ -38,7 +72,7 @@ class CountViewSet(APIView):
         }
 
         data = {
-               'eleve': Eleve.objects.count(),
+               'eleve': Eleve.objects.filter(etat="validé").count(),
                'bus': Bus.objects.count(),
                'ligne_eleve':ligne_eleve,
                'ligne': Ligne.objects.count(),
@@ -616,28 +650,50 @@ class EleveViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
                 self.queryset=self.queryset.filter(user__id=request.user.id)
           search_query = self.request.query_params.get('search_query', '')
           self.pagination_class = self.get_paginator()
+
+
           search_filter_gte = self.request.GET.get('search_filter_date_inscription_gte') or ''
           search_filter_lte = self.request.GET.get('search_filter_date_inscription_lte') or ''
+
+
           if search_filter_gte and search_filter_lte:
                self.queryset=self.queryset.filter(date_inscription__range=[search_filter_gte, search_filter_lte])
+          
+          
           elif search_filter_lte:
                self.queryset=self.queryset.filter(date_inscription__lte=search_filter_lte)
+
+
           elif search_filter_gte:
                self.queryset=self.queryset.filter(date_inscription__gte=search_filter_gte)
+
+
           search_filter_gte = self.request.GET.get('search_filter_date_naissance_gte') or ''
           search_filter_lte = self.request.GET.get('search_filter_date_naissance_lte') or ''
+
+
           if search_filter_gte and search_filter_lte:
                self.queryset=self.queryset.filter(date_naissance__range=[search_filter_gte, search_filter_lte])
+       
+       
           elif search_filter_lte:
                self.queryset=self.queryset.filter(date_naissance__lte=search_filter_lte)
+
+
           elif search_filter_gte:
                self.queryset=self.queryset.filter(date_naissance__gte=search_filter_gte)
+
+
           search_filter = self.request.GET.get('search_filter_ligne') or ''
           if search_filter:
                self.queryset=self.queryset.filter(Q(ligne__pk=search_filter))
+
+
           search_filter = self.request.GET.get('search_filter_parent') or ''
           if search_filter:
                self.queryset=self.queryset.filter(Q(parent__pk=search_filter))
+
+
           search_filter = self.request.GET.get('search_filter_ecole') or ''
           if search_filter:
                self.queryset=self.queryset.filter(Q(ecole__pk=search_filter))
@@ -650,12 +706,18 @@ class EleveViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
           search_filter = self.request.GET.get('search_filter_classe') or ''
           if search_filter:
                self.queryset=self.queryset.filter(Q(classe__pk=search_filter))
+
+
           search_filter = self.request.GET.get('search_filter_lieu_ramassage') or ''
           if search_filter:
                self.queryset=self.queryset.filter(Q(lieu_ramassage__pk=search_filter))
+
           if search_query:
                self.queryset = self.queryset.filter(Q(pk__icontains=search_query)
-| Q(image__icontains=search_query) | Q(nom__icontains=search_query) | Q(prenoms__icontains=search_query) | Q(adresse__icontains=search_query) | Q(montant_frais__icontains=search_query) | Q(etat__icontains=search_query) )
+                    | Q(image__icontains=search_query) | Q(nom__icontains=search_query) | 
+                    Q(prenoms__icontains=search_query) | Q(adresse__icontains=search_query) |
+                    Q(montant_frais__icontains=search_query) | Q(etat__icontains=search_query) )
+               
           return super().list(request, *args, **kwargs)
 
 
@@ -670,17 +732,13 @@ class EleveViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
           
           user_serializer = UserSerializer(data=request.data.get('user',{}))
 
-
+          print(request.user)
           if request.user.pk:
                print(request.user.username)
                request.data['user']=request.user.pk
-    
                # return Response({})
-
           
           elif request.data['user']!={} :
-
-
 
                username=request.data['user'].get('username','')
                email=request.data['user'].get('email','')
@@ -692,7 +750,6 @@ class EleveViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
 
                if User.objects.filter(email=email).exists():
                       return Response({"user":{"email":'Email d\'utilisateur déjà pris.'}}, status=status.HTTP_400_BAD_REQUEST)
-
 
                user=User.objects.create_user(username=username,password=password)
                user.role=role
@@ -712,18 +769,44 @@ class EleveViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
                     lieu_ramassage = lieu_ramassage_serializer.save()
                     request.data['lieu_ramassage']=lieu_ramassage.pk
 
+          # Lieu Remisage
+          lieu_remisage_serializer = LieuRamassageSerializer(data=request.data.get('new_lieu_remisage',{}))
+
+          print("lieu de remisage : ")
+
+          print(request.data['lieu_remisage'])
+
+          print(request.data.get('new_lieu_remisage',{}))
+
+          if request.data.get('create_lieu_remisage',None):
+               
+               if lieu_remisage_serializer.is_valid():
+                    lieu_remisage = lieu_remisage_serializer.save()
+                    print("tesrtuuuuuuuuuuuuuuuuuuuuuu")
+                    request.data['lieu_remisage']=lieu_remisage.pk
+               else:
+                    print("non validé")
+
           serializer = self.serializer_class(data=request.data)
           if serializer.is_valid():
                print(request.data['user'])
                eleve=serializer.save()
+
+               for assignationitineraire in request.data['assignationitineraires']:
+                    assignationitineraire['eleve']=eleve.pk
+                    assignationitineraire_serializer=AssignationItineraireSerializer(data=assignationitineraire)
+
+                    if assignationitineraire_serializer.is_valid():
+                         assignationitineraire_serializer.save()
+                    else:
+                         print(assignationitineraire_serializer.errors)
+
                return Response(serializer.data, status=status.HTTP_201_CREATED)
 
           errors=serializer.errors
           if not parent_serializer.is_valid():
                errors['parent']=parent_serializer.errors
-          
-    
-
+          #id
           if (not classe_serializer.is_valid()) and  request.data.get('create_classe',None):
                errors['classe']=classe_serializer.errors
 
@@ -856,11 +939,22 @@ class ItineraireViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
                     busassignation_serializer=BusAssignationSerializer(data=busassignation)
                     if busassignation_serializer.is_valid():
                          busassignation_serializer.save()
+
                for horaire in request.data['horaires']:
                     horaire['itineraire']=itineraire.pk
                     horaire_serializer=HoraireSerializer(data=horaire)
                     if horaire_serializer.is_valid():
                          horaire_serializer.save()
+               
+               for ecoleassignation in request.data['ecoleassignations']:
+                    ecoleassignation['itineraire']=itineraire.pk
+                    ecoleassignation_serializer=EcoleAssignationSerializer(data=ecoleassignation)
+
+                    if ecoleassignation_serializer.is_valid():
+                         ecoleassignation_serializer.save()
+                    else:
+                         print(ecoleassignation_serializer.errors)
+
                return Response(serializer.data, status=status.HTTP_201_CREATED)
 
           errors=serializer.errors
@@ -874,6 +968,7 @@ class ItineraireViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
           serializer = self.serializer_class(instance,data=request.data)
           if serializer.is_valid():
                itineraire=serializer.save()
+
                # Mettre à jour les busassignations existants pour cette itineraire
                busassignations_digits = [int(value['pk']) for value in request.data['busassignations'] if value.get('pk',None)]
                BusAssignation.objects.filter(itineraire=itineraire).exclude(pk__in=busassignations_digits).delete()
@@ -883,6 +978,7 @@ class ItineraireViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
                     busassignation_serializer=BusAssignationSerializer(instance_busassignation,data=busassignation)
                     if busassignation_serializer.is_valid():
                          busassignation_serializer.save()
+
                # Mettre à jour les horaires existants pour cette itineraire
                horaires_digits = [int(value['pk']) for value in request.data['horaires'] if value.get('pk',None)]
                Horaire.objects.filter(itineraire=itineraire).exclude(pk__in=horaires_digits).delete()
@@ -892,6 +988,17 @@ class ItineraireViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
                     horaire_serializer=HoraireSerializer(instance_horaire,data=horaire)
                     if horaire_serializer.is_valid():
                          horaire_serializer.save()
+               
+               # Mettre à jour les ecoleassignations existants pour cette itineraire
+               ecoleassignations_digits = [int(value['pk']) for value in request.data['ecoleassignations'] if value.get('pk',None)]
+               EcoleAssignation.objects.filter(itineraire=itineraire).exclude(pk__in=ecoleassignations_digits).delete()
+               for ecoleassignation in request.data['ecoleassignations']:
+                    ecoleassignation['itineraire']=itineraire.pk
+                    instance_ecoleassignation = EcoleAssignation.objects.filter(pk=ecoleassignation.get('pk',None)).first()
+                    ecoleassignation_serializer=EcoleAssignationSerializer(instance_ecoleassignation,data=ecoleassignation)
+                    if ecoleassignation_serializer.is_valid():
+                         ecoleassignation_serializer.save()
+
                return Response(serializer.data, status=status.HTTP_201_CREATED)
           errors=serializer.errors
           return Response(errors, status=status.HTTP_400_BAD_REQUEST)
@@ -949,6 +1056,71 @@ class HoraireViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
                return Response(serializer.data, status=status.HTTP_201_CREATED)
           errors=serializer.errors
           return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class EcoleAssignationViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
+     queryset = EcoleAssignation.objects.all().order_by('-pk')
+     serializer_class = EcoleAssignationSerializer
+     detail_serializer_class = EcoleAssignationDetailSerializer
+     def get_paginator(self):
+          if 'paginate' in self.request.query_params and self.request.query_params['paginate'] == 'false':
+               return None  # Désactive la pagination si le paramètre 'paginate' est 'false'
+          return CustomPagination
+
+
+     def get_serializer_context(self):
+          context=super().get_serializer_context()
+          context['request'] = self.request
+          return context
+
+
+     def list(self, request, *args, **kwargs):
+          search_query = self.request.query_params.get('search_query', '')
+          self.pagination_class = self.get_paginator()
+          search_filter_gte = self.request.GET.get('search_filter_date_assignation_gte') or ''
+          search_filter_lte = self.request.GET.get('search_filter_date_assignation_lte') or ''
+          if search_filter_gte and search_filter_lte:
+               self.queryset=self.queryset.filter(date_assignation__range=[search_filter_gte, search_filter_lte])
+          elif search_filter_lte:
+               self.queryset=self.queryset.filter(date_assignation__lte=search_filter_lte)
+          elif search_filter_gte:
+               self.queryset=self.queryset.filter(date_assignation__gte=search_filter_gte)
+          search_filter = self.request.GET.get('search_filter_itineraire') or ''
+          if search_filter:
+               self.queryset=self.queryset.filter(Q(itineraire__pk=search_filter))
+          search_filter = self.request.GET.get('search_filter_ecole') or ''
+          if search_filter:
+               self.queryset=self.queryset.filter(Q(ecole__pk=search_filter))
+          if search_query:
+               self.queryset = self.queryset.filter(Q(pk__icontains=search_query)
+)
+          return super().list(request, *args, **kwargs)
+
+
+     def create(self, request, *args, **kwargs):
+          serializer = self.serializer_class(data=request.data)
+          serializer.is_valid()
+          serializer = self.serializer_class(data=request.data)
+          if serializer.is_valid():
+               ecoleassignation=serializer.save()
+               return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+          errors=serializer.errors
+          return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+     def update(self, request, *args, **kwargs):
+          instance = self.get_object()
+          serializer = self.serializer_class(instance,data=request.data)
+          serializer.is_valid()
+          serializer = self.serializer_class(instance,data=request.data)
+          if serializer.is_valid():
+               ecoleassignation=serializer.save()
+               return Response(serializer.data, status=status.HTTP_201_CREATED)
+          errors=serializer.errors
+          return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class BusAssignationViewSet(MultipleSerializerMixin,viewsets.ModelViewSet):
      queryset = BusAssignation.objects.all().order_by('-pk')
@@ -1035,16 +1207,25 @@ class AssignationItineraireViewSet(MultipleSerializerMixin,viewsets.ModelViewSet
           search_filter_lte = self.request.GET.get('search_filter_dateAssigntion_lte') or ''
           if search_filter_gte and search_filter_lte:
                self.queryset=self.queryset.filter(dateAssigntion__range=[search_filter_gte, search_filter_lte])
+          
           elif search_filter_lte:
                self.queryset=self.queryset.filter(dateAssigntion__lte=search_filter_lte)
+
           elif search_filter_gte:
                self.queryset=self.queryset.filter(dateAssigntion__gte=search_filter_gte)
+
           search_filter = self.request.GET.get('search_filter_eleve') or ''
           if search_filter:
                self.queryset=self.queryset.filter(Q(eleve__pk=search_filter))
+          
+          search_filter = self.request.GET.get('search_filter_bus') or ''
+          if search_filter:
+               self.queryset=self.queryset.filter(Q(bus__pk=search_filter))
+
           search_filter = self.request.GET.get('search_filter_itineraire') or ''
           if search_filter:
                self.queryset=self.queryset.filter(Q(itineraire__pk=search_filter))
+
           if search_query:
                self.queryset = self.queryset.filter(Q(pk__icontains=search_query)
 )

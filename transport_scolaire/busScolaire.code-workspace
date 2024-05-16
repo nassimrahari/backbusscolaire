@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../busScolaire"
+		},
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"liveServer.settings.port": 5501
+	}
+}

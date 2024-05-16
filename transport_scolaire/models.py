@@ -94,7 +94,7 @@ class Parent(models.Model):
           return f"{self.pk} {self.nom_mere} | {self.nom_pere}"
           
           
-          # Create your models here.
+# Create your models here.
 
 class Eleve(models.Model):
      date_inscription = models.DateField(default=datetime.date.today,)
@@ -107,12 +107,24 @@ class Eleve(models.Model):
      parent = models.ForeignKey(Parent, on_delete=models.SET_NULL,null=True,blank=False,)
      ecole = models.ForeignKey(Ecole, on_delete=models.SET_NULL,null=True,blank=False,)
      classe = models.ForeignKey(Classe, on_delete=models.SET_NULL,null=True,blank=False,)
+
+
+     type_inscription = models.CharField(max_length=50, choices=[
+
+          ('ramasse et remisage', 'Ramasse et Remisage'),
+          ('ramassage', 'Ramassage'),
+          ('remisage', 'Remisage'),
+          
+     ],
+     default="ramassage")
+     
+
      lieu_ramassage = models.ForeignKey(LieuRamassage, on_delete=models.SET_NULL,verbose_name="lieu de ramassage",null=True,blank=False,)
+     lieu_remisage = models.ForeignKey(LieuRamassage, on_delete=models.SET_NULL,verbose_name="lieu de remisage",related_name="eleves",null=True,blank=False,)
      montant_frais = models.DecimalField(max_length=50,decimal_places=2,max_digits=10,null=True,blank=True,)
      etat = models.CharField(max_length=50,default="en_attente",)
      user=models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
 
-     
      def __str__(self):
           return self.nom
           
@@ -121,6 +133,11 @@ class Itineraire(models.Model):
      date_itineraire = models.DateField(null=True, default=datetime.date.today,)
      ligne = models.ForeignKey(Ligne, on_delete=models.CASCADE,)
      ligne_inverse = models.BooleanField(default=False,)
+
+class EcoleAssignation(models.Model):
+     date_assignation = models.DateField(default=datetime.date.today,)
+     itineraire = models.ForeignKey(Itineraire,on_delete=models.CASCADE,)
+     ecole = models.ForeignKey(Ecole,on_delete=models.CASCADE,)
 
 class Horaire(models.Model):
      pointArret = models.ForeignKey('LieuLigne',on_delete=models.CASCADE,)
@@ -133,13 +150,11 @@ class BusAssignation(models.Model):
      bus = models.ForeignKey(Bus,on_delete=models.CASCADE,)
      itineraire = models.ForeignKey("Itineraire",on_delete=models.CASCADE,)
      def __str__(self):
-          return f"ItinÃ©raire NÂ° {self.pk}"
-          
-          
-          
+          return f"bus assignation N° {self.pk}"
 
 class AssignationItineraire(models.Model):
      dateAssigntion = models.DateField(default=timezone.now,)
      eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE,null=True,blank=False,)
      itineraire = models.ForeignKey('Itineraire', on_delete=models.CASCADE,null=True,blank=False,)
+     bus = models.ForeignKey(Bus,on_delete=models.CASCADE,null=True)
 

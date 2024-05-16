@@ -37,10 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
-    'corsheaders',
+    
     'authentication',
     'app_master',
     'transport_scolaire',
@@ -50,19 +51,21 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
   'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
+    # 'django.middleware.common.CommonMiddleware',
+   
 ]
 
 # CORS_ALLOWED_ORIGINS = [
+
 #     'http://localhost:8080', 
-#     #  'http://localhost:5500',  # Ajoutez le domaine de votre application React
-#     # Ajoutez d'autres domaines si nécessaire
+#     'http://localhost:8000', 
+
 # ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -70,10 +73,8 @@ CORS_ALLOW_HEADERS = ['*']
 
 
 ROOT_URLCONF = 'gestionBusScolaire.urls'
-
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
-]
+CORS_ALLOW_ALL_ORIGINS=True
+# CORS_ALLOWED_ORIGINS = ['*']
 
 TEMPLATES = [
     {
@@ -140,6 +141,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

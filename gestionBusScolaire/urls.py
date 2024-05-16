@@ -6,8 +6,10 @@ from django.conf.urls.static import static
 from django.urls import path,include
 from rest_framework import routers
 router = routers.DefaultRouter()
+
 from transport_scolaire.view_sets import (
      ChauffeurViewSet,
+     EcoleAssignationViewSet,
      TypeVehiculeViewSet,
      BusViewSet,
      LieuLigneViewSet,
@@ -23,6 +25,7 @@ from transport_scolaire.view_sets import (
      BusAssignationViewSet,
      AssignationItineraireViewSet,
 )
+
 router.register('transport_scolaire/chauffeurs', ChauffeurViewSet,basename='transport_scolaire.chauffeurs')
 router.register('transport_scolaire/typevehicules', TypeVehiculeViewSet,basename='transport_scolaire.typevehicules')
 router.register('transport_scolaire/buss', BusViewSet,basename='transport_scolaire.buss')
@@ -37,6 +40,7 @@ router.register('transport_scolaire/eleves', EleveViewSet,basename='transport_sc
 router.register('transport_scolaire/itineraires', ItineraireViewSet,basename='transport_scolaire.itineraires')
 router.register('transport_scolaire/horaires', HoraireViewSet,basename='transport_scolaire.horaires')
 router.register('transport_scolaire/busassignations', BusAssignationViewSet,basename='transport_scolaire.busassignations')
+router.register('transport_scolaire/ecoleassignations', EcoleAssignationViewSet,basename='transport_scolaire.ecoleassignations')
 router.register('transport_scolaire/assignationitineraires', AssignationItineraireViewSet,basename='transport_scolaire.assignationitineraires')
 
 from app_master.views import HomeViewPage
@@ -46,7 +50,7 @@ from authentication.views_set import TokenCheckView
 from django.views.generic.base import RedirectView
 from django.contrib.auth import get_user_model
 
-from transport_scolaire.view_sets import CountViewSet
+from transport_scolaire.view_sets import CountViewSet,AssignationBusItineraireViewSet
 
 User=get_user_model()
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -71,6 +75,8 @@ urlpatterns = [
      path('admin/', admin.site.urls),
      path('api/', include(router.urls)),     path('',HomeViewPage.as_view(),name='dashboard'),
      path('transport_scolaire/', include('transport_scolaire.urls')),
+     path('api/ts/assignation_itineraire_bus', AssignationBusItineraireViewSet.as_view(),name='transport_scolaire:assignation_itineraire_bus'),
+
      path('api-auth/', include('rest_framework.urls')),
      path('api/token/', CustomTokenObtainPairView.as_view(), name='obtain_tokens'),
      path('api/token/check/', TokenCheckView.as_view(), name='check_tokens'),
@@ -81,4 +87,4 @@ urlpatterns = [
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns +=[path('<path:dummy>', RedirectView.as_view(url='/')),]
+# urlpatterns +=[path('<path:dummy>', RedirectView.as_view(url='/')),]

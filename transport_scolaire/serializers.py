@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 User=get_user_model()
 
-from .models import ( Chauffeur , TypeVehicule , Bus , LieuLigne , Ligne , LieuRamassage , OrdreLieu , Ecole , Classe , Parent , Eleve , Itineraire , Horaire , BusAssignation , AssignationItineraire ,)
+from .models import ( Chauffeur, EcoleAssignation , TypeVehicule , Bus , LieuLigne , Ligne , LieuRamassage , OrdreLieu , Ecole , Classe , Parent , Eleve , Itineraire , Horaire , BusAssignation , AssignationItineraire ,)
 class ChauffeurMinSerializer(serializers.ModelSerializer):
      class Meta:
           model = Chauffeur
@@ -119,7 +119,7 @@ class UserMinSerializer(serializers.ModelSerializer):
                ret['role'] = "admin"
 
           return ret
-          return ret
+          
 
 class EleveMinSerializer(serializers.ModelSerializer):
      ligne=LigneMinSerializer()
@@ -129,7 +129,7 @@ class EleveMinSerializer(serializers.ModelSerializer):
      lieu_ramassage=LieuRamassageMinSerializer()
      class Meta:
           model = Eleve
-          fields = ['pk','date_inscription','pk','date_naissance','pk','image','pk','nom','pk','prenoms','pk','adresse','pk','ligne','pk','parent','pk','ecole','pk','classe','pk','lieu_ramassage','pk','montant_frais','pk','etat',]
+          fields = ['pk','date_inscription','pk','date_naissance','pk','image','pk','nom','pk','prenoms','pk','adresse','pk','ligne','pk','parent','pk','ecole','pk','classe','pk','lieu_ramassage','lieu_remisage','montant_frais','pk','etat',]
      def to_representation(self, instance):
           ret = super().to_representation(instance)
           ret['repr'] = str(instance)
@@ -144,6 +144,8 @@ class ItineraireMinSerializer(serializers.ModelSerializer):
      def to_representation(self, instance):
           ret = super().to_representation(instance)
           ret['repr'] = str(instance)
+          horaires = instance.horaire_set.all()
+          ret['horaires'] =HoraireMinMinSerializer(horaires, many=True).data
           return ret
 
 class HoraireMinSerializer(serializers.ModelSerializer):
@@ -152,6 +154,17 @@ class HoraireMinSerializer(serializers.ModelSerializer):
      class Meta:
           model = Horaire
           fields = ['pk','pointArret','pk','itineraire','pk','heureDebut','pk','heureFin',]
+     def to_representation(self, instance):
+          ret = super().to_representation(instance)
+          ret['repr'] = str(instance)
+          return ret
+
+class EcoleAssignationMinSerializer(serializers.ModelSerializer):
+     itineraire=ItineraireMinSerializer()
+     ecole=EcoleMinSerializer()
+     class Meta:
+          model = EcoleAssignation
+          fields = ['pk','date_assignation','pk','itineraire','pk','ecole',]
      def to_representation(self, instance):
           ret = super().to_representation(instance)
           ret['repr'] = str(instance)
@@ -170,13 +183,16 @@ class BusAssignationMinSerializer(serializers.ModelSerializer):
 
 class AssignationItineraireMinSerializer(serializers.ModelSerializer):
      eleve=EleveMinSerializer()
+     bus=BusMinSerializer()
      itineraire=ItineraireMinSerializer()
      class Meta:
           model = AssignationItineraire
-          fields = ['pk','dateAssigntion','pk','eleve','pk','itineraire',]
+          fields = ['pk','dateAssigntion','eleve','bus','itineraire',]
      def to_representation(self, instance):
           ret = super().to_representation(instance)
           ret['repr'] = str(instance)
+         
+         
           return ret
 
 
@@ -448,14 +464,18 @@ class EleveSerializer(serializers.ModelSerializer):
      image = Base64ImageField(required=False)
      class Meta:
           model = Eleve
-          fields = ['pk','date_inscription','pk','date_naissance','pk','image','pk','nom','pk','prenoms','pk','adresse','pk','ligne','pk','parent','user','pk','ecole','pk','classe','pk','lieu_ramassage','pk','montant_frais','pk','etat',]
+          fields = ['pk','date_inscription','pk','date_naissance','pk','image','pk','nom','pk','prenoms','pk','adresse','pk','ligne','pk','parent','user','pk','ecole','pk','classe','pk','lieu_ramassage','lieu_remisage','type_inscription','pk','montant_frais','pk','etat',]
+     
      def to_representation(self, instance):
           ret = super().to_representation(instance)
           ret['ligne'] = str(instance.ligne)
           ret['parent'] = str(instance.parent)
           ret['ecole'] = str(instance.ecole)
+          ret['user'] = str(instance.user)
           ret['classe'] = str(instance.classe)
           ret['lieu_ramassage'] = str(instance.lieu_ramassage)
+          ret['lieu_remisage'] = str(instance.lieu_remisage)
+          ret['type_inscription'] = str(instance.type_inscription)
           request = self.context.get('request')
           special_details=None
           try:
@@ -463,11 +483,18 @@ class EleveSerializer(serializers.ModelSerializer):
                special_details=eval(special_detail_manytoone_class)
           except:
                pass
+
           if type(special_details) is list:
                pass
                if 'assignationitineraires' in special_details:
                     assignationitineraires = instance.assignationitineraire_set.all()
                     ret['assignationitineraires'] =AssignationItineraireMinSerializer(assignationitineraires, many=True).data
+         
+               # if 'assignationitineraires' in special_details:
+               #      assignationitineraires = instance.assignationitineraire_set.all()
+               #      ret['assignationitineraires'] =AssignationItineraireMinSerializer(assignationitineraires, many=True).data
+
+           
           ret['repr'] = str(instance)
           return ret
 
@@ -475,11 +502,13 @@ class ItineraireSerializer(serializers.ModelSerializer):
      class Meta:
           model = Itineraire
           fields = ['pk','date_itineraire','pk','ligne','pk','ligne_inverse',]
+
      def to_representation(self, instance):
           ret = super().to_representation(instance)
           ret['ligne'] = str(instance.ligne)
           request = self.context.get('request')
           special_details=None
+
           try:
                special_detail_manytoone_class=request.query_params.get('special_detail_manytoone_class', '')
                special_details=eval(special_detail_manytoone_class)
@@ -490,9 +519,15 @@ class ItineraireSerializer(serializers.ModelSerializer):
                if 'horaires' in special_details:
                     horaires = instance.horaire_set.all()
                     ret['horaires'] =HoraireMinSerializer(horaires, many=True).data
+
                if 'busassignations' in special_details:
                     busassignations = instance.busassignation_set.all()
                     ret['busassignations'] =BusAssignationMinSerializer(busassignations, many=True).data
+               
+               if 'ecoleassignations' in special_details:
+                    ecoleassignations = instance.ecoleassignation_set.all()
+                    ret['ecoleassignations'] =EcoleAssignationMinSerializer(ecoleassignations, many=True).data
+
                if 'assignationitineraires' in special_details:
                     assignationitineraires = instance.assignationitineraire_set.all()
                     ret['assignationitineraires'] =AssignationItineraireMinSerializer(assignationitineraires, many=True).data
@@ -518,6 +553,29 @@ class HoraireSerializer(serializers.ModelSerializer):
                pass
           ret['repr'] = str(instance)
           return ret
+     
+
+
+class EcoleAssignationSerializer(serializers.ModelSerializer):
+     class Meta:
+          model = EcoleAssignation
+          fields = ['pk','date_assignation','pk','itineraire','pk','ecole',]
+     def to_representation(self, instance):
+          ret = super().to_representation(instance)
+          ret['itineraire'] = str(instance.itineraire)
+          ret['ecole'] = str(instance.ecole)
+          request = self.context.get('request')
+          special_details=None
+          try:
+               special_detail_manytoone_class=request.query_params.get('special_detail_manytoone_class', '')
+               special_details=eval(special_detail_manytoone_class)
+          except:
+               pass
+          if type(special_details) is list:
+               pass
+          ret['repr'] = str(instance)
+          return ret
+
 
 class BusAssignationSerializer(serializers.ModelSerializer):
      class Meta:
@@ -542,13 +600,18 @@ class BusAssignationSerializer(serializers.ModelSerializer):
 class AssignationItineraireSerializer(serializers.ModelSerializer):
      class Meta:
           model = AssignationItineraire
-          fields = ['pk','dateAssigntion','pk','eleve','pk','itineraire',]
+          fields = ['pk','dateAssigntion','eleve','bus','itineraire',]
+
      def to_representation(self, instance):
           ret = super().to_representation(instance)
+
           ret['eleve'] = str(instance.eleve)
           ret['itineraire'] = str(instance.itineraire)
+          ret['bus'] = str(instance.bus)
+
           request = self.context.get('request')
           special_details=None
+
           try:
                special_detail_manytoone_class=request.query_params.get('special_detail_manytoone_class', '')
                special_details=eval(special_detail_manytoone_class)
@@ -596,6 +659,17 @@ class BusDetailSerializer(serializers.ModelSerializer):
           ret['busassignations'] =BusAssignationMinSerializer(busassignations, many=True).data
           return ret
 
+
+class HoraireMinMinSerializer(serializers.ModelSerializer):
+     pointArret=LieuLigneMinSerializer()
+     class Meta:
+          model = Horaire
+          fields = ['pk','pointArret','pk','itineraire','pk','heureDebut','pk','heureFin',]
+     def to_representation(self, instance):
+          ret = super().to_representation(instance)
+          ret['repr'] = str(instance)
+          return ret
+     
 class LieuLigneDetailSerializer(serializers.ModelSerializer):
      class Meta:
           model = LieuLigne
@@ -618,6 +692,7 @@ class LigneDetailSerializer(serializers.ModelSerializer):
      def to_representation(self, instance):
           ret = super().to_representation(instance)
           ret['repr'] = str(instance)
+
           lieuramassages = instance.lieuramassage_set.all()
           ret['lieuramassages'] =LieuRamassageMinSerializer(lieuramassages, many=True).data
           ordrelieus = instance.ordrelieu_set.all()
@@ -689,15 +764,18 @@ class ParentDetailSerializer(serializers.ModelSerializer):
           return ret
 
 class EleveDetailSerializer(serializers.ModelSerializer):
+
      ligne=LigneMinSerializer()
      parent=ParentMinSerializer()
      user=UserMinSerializer()
      ecole=EcoleMinSerializer()
      classe=ClasseMinSerializer()
      lieu_ramassage=LieuRamassageMinSerializer()
+
      class Meta:
           model = Eleve
-          fields = ['pk','date_inscription','pk','date_naissance','pk','image','pk','nom','pk','prenoms','user','pk','adresse','pk','ligne','pk','parent','pk','ecole','pk','classe','pk','lieu_ramassage','pk','montant_frais','pk','etat',]
+          fields = ['pk','date_inscription','pk','date_naissance','pk','image','pk','nom','pk','prenoms','user','pk','adresse','pk','ligne','pk','parent','pk','ecole','pk','classe','pk','lieu_ramassage','lieu_remisage','type_inscription','montant_frais','pk','etat',]
+    
      def to_representation(self, instance):
           ret = super().to_representation(instance)
           ret['repr'] = str(instance)
@@ -710,6 +788,7 @@ class ItineraireDetailSerializer(serializers.ModelSerializer):
      class Meta:
           model = Itineraire
           fields = ['pk','date_itineraire','pk','ligne','pk','ligne_inverse',]
+          
      def to_representation(self, instance):
           ret = super().to_representation(instance)
           ret['repr'] = str(instance)
@@ -717,6 +796,11 @@ class ItineraireDetailSerializer(serializers.ModelSerializer):
           ret['horaires'] =HoraireMinSerializer(horaires, many=True).data
           busassignations = instance.busassignation_set.all()
           ret['busassignations'] =BusAssignationMinSerializer(busassignations, many=True).data
+
+
+          ecoleassignations = instance.ecoleassignation_set.all()
+          ret['ecoleassignations'] =EcoleAssignationMinSerializer(ecoleassignations, many=True).data
+
           assignationitineraires = instance.assignationitineraire_set.all()
           ret['assignationitineraires'] =AssignationItineraireMinSerializer(assignationitineraires, many=True).data
           return ret
@@ -732,6 +816,18 @@ class HoraireDetailSerializer(serializers.ModelSerializer):
           ret['repr'] = str(instance)
           return ret
 
+class EcoleAssignationDetailSerializer(serializers.ModelSerializer):
+     itineraire=ItineraireMinSerializer()
+     ecole=EcoleMinSerializer()
+     class Meta:
+          model = EcoleAssignation
+          fields = ['pk','date_assignation','pk','itineraire','pk','ecole',]
+     def to_representation(self, instance):
+          ret = super().to_representation(instance)
+          ret['repr'] = str(instance)
+          return ret
+
+
 class BusAssignationDetailSerializer(serializers.ModelSerializer):
      bus=BusMinSerializer()
      itineraire=ItineraireMinSerializer()
@@ -746,9 +842,10 @@ class BusAssignationDetailSerializer(serializers.ModelSerializer):
 class AssignationItineraireDetailSerializer(serializers.ModelSerializer):
      eleve=EleveMinSerializer()
      itineraire=ItineraireMinSerializer()
+
      class Meta:
           model = AssignationItineraire
-          fields = ['pk','dateAssigntion','pk','eleve','pk','itineraire',]
+          fields = ['pk','dateAssigntion','eleve','bus','itineraire',]
      def to_representation(self, instance):
           ret = super().to_representation(instance)
           ret['repr'] = str(instance)
