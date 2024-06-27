@@ -1,6 +1,6 @@
 from django import forms
 from django.utils import timezone
-from .models import ( Chauffeur , TypeVehicule , Bus , LieuLigne , Ligne , LieuRamassage , OrdreLieu , Ecole , Classe , Parent , Eleve , Itineraire , Horaire , BusAssignation , AssignationItineraire ,)
+from .models import ( Chauffeur, Inscription , TypeVehicule , Bus , LieuLigne , Ligne , LieuRamassage , OrdreLieu , Ecole , Classe , Parent , Eleve , Itineraire , Horaire , BusAssignation , AssignationItineraire ,)
 
 class ChauffeurCreateForm(forms.ModelForm):
      class Meta:
@@ -113,19 +113,30 @@ class ParentUpdateForm(forms.ModelForm):
 
 
 class EleveCreateForm(forms.ModelForm):
-     date_inscription = forms.DateField(initial=str(timezone.now().date()).replace("/","-"),widget=forms.DateInput(attrs={'type': 'date'}))
      date_naissance = forms.DateField(initial=str(timezone.now().date()).replace("/","-"),widget=forms.DateInput(attrs={'type': 'date'}))
      class Meta:
           model = Eleve
-          fields = ['date_inscription','date_naissance','image','nom','prenoms','adresse','ligne','parent','ecole','classe','lieu_ramassage','montant_frais','etat',]
+          fields = ['date_naissance','image','nom','prenoms','adresse','parent','ecole']
 
 class EleveUpdateForm(forms.ModelForm):
-     date_inscription = forms.DateField(initial=str(timezone.now().date()).replace("/","-"),widget=forms.DateInput(attrs={'type': 'date'},format='%Y-%m-%d'))
-     date_naissance = forms.DateField(initial=str(timezone.now().date()).replace("/","-"),widget=forms.DateInput(attrs={'type': 'date'},format='%Y-%m-%d'))
+     date_naissance = forms.DateField(initial=str(timezone.now().date()).replace("/","-"),widget=forms.DateInput(attrs={'type': 'date'}))
      class Meta:
           model = Eleve
-          fields = ['date_inscription','date_naissance','image','nom','prenoms','adresse','ligne','parent','ecole','classe','lieu_ramassage','montant_frais','etat',]
+          fields = ['date_naissance','image','nom','prenoms','adresse','parent','ecole']
 
+class InscriptionCreateForm(forms.ModelForm):
+     date_inscription = forms.DateField(initial=str(timezone.now().date()).replace("/","-"),widget=forms.DateInput(attrs={'type': 'date'},format='%Y-%m-%d'))
+     
+     class Meta:
+          model = Inscription
+          fields = ['date_inscription','ligne','classe','lieu_ramassage','montant_frais','etat',]
+
+class InscriptionUpdateForm(forms.ModelForm):
+     date_inscription = forms.DateField(initial=str(timezone.now().date()).replace("/","-"),widget=forms.DateInput(attrs={'type': 'date'},format='%Y-%m-%d'))
+     
+     class Meta:
+          model = Inscription
+          fields = ['date_inscription','ligne','classe','lieu_ramassage','montant_frais','etat',]
 
 class ItineraireCreateForm(forms.ModelForm):
      date_itineraire = forms.DateField(initial=str(timezone.now().date()).replace("/","-"),widget=forms.DateInput(attrs={'type': 'date'}))
@@ -172,13 +183,13 @@ class AssignationItineraireCreateForm(forms.ModelForm):
      dateAssigntion = forms.DateField(initial=str(timezone.now().date()).replace("/","-"),widget=forms.DateInput(attrs={'type': 'date'}))
      class Meta:
           model = AssignationItineraire
-          fields = ['dateAssigntion','eleve','itineraire',]
+          fields = ['dateAssigntion','inscription','itineraire',]
 
 class AssignationItineraireUpdateForm(forms.ModelForm):
      dateAssigntion = forms.DateField(initial=str(timezone.now().date()).replace("/","-"),widget=forms.DateInput(attrs={'type': 'date'},format='%Y-%m-%d'))
      class Meta:
           model = AssignationItineraire
-          fields = ['dateAssigntion','eleve','itineraire',]
+          fields = ['dateAssigntion','inscription','itineraire',]
 
 
 

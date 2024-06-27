@@ -11,7 +11,7 @@ class Chauffeur(models.Model):
      tel = models.CharField(max_length=50,)
      email = models.CharField(max_length=50,)
      def __str__(self) -> str:
-          return f"{self.pk} {self.nom} {self.prenoms}"
+          return f"{self.nom} {self.prenoms}"
           
 
 class TypeVehicule(models.Model):
@@ -26,6 +26,7 @@ class Bus(models.Model):
      chauffeur = models.ForeignKey('Chauffeur', on_delete=models.SET_NULL, null=True,)
      couleur = models.CharField(max_length=50, null=True,blank=False,)
      nbr_place = models.IntegerField()
+
      def __str__(self) -> str:
           return f"{self.immatriculation}"
           
@@ -37,7 +38,7 @@ class LieuLigne(models.Model):
      latitude = models.CharField(max_length=50,default="-18.881589691375204",blank=False,)
      longitude = models.CharField(max_length=50,default="47.50664234161377",null=True,blank=False,)
      def __str__(self):
-          return f"{self.id} {self.nom_lieu}"
+          return f"{self.nom_lieu}"
           
           
 
@@ -55,7 +56,7 @@ class LieuRamassage(models.Model):
      ligne = models.ForeignKey("Ligne",null=True,on_delete=models.CASCADE,)
      lieu_ligne = models.ForeignKey("LieuLigne",null=True,on_delete=models.CASCADE,)
      def __str__(self):
-          return f"{self.id} {self.nom_lieu}"
+          return f"{self.nom_lieu}"
           
           
           
@@ -97,17 +98,29 @@ class Parent(models.Model):
 # Create your models here.
 
 class Eleve(models.Model):
-     date_inscription = models.DateField(default=datetime.date.today,)
+     
      date_naissance = models.DateField(null=True,)
      image = models.ImageField(null=True,)
      nom = models.CharField(max_length=100,)
      prenoms = models.CharField(max_length=100,)
      adresse = models.CharField(max_length=100,)
-     ligne = models.ForeignKey(Ligne, on_delete=models.SET_NULL,null=True,blank=False,)
-     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL,null=True,blank=False,)
      ecole = models.ForeignKey(Ecole, on_delete=models.SET_NULL,null=True,blank=False,)
-     classe = models.ForeignKey(Classe, on_delete=models.SET_NULL,null=True,blank=False,)
 
+     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL,null=True,blank=False,)
+     
+     def __str__(self):
+          return self.nom
+     
+class AnneeInscription(models.Model):
+     annee=models.CharField(max_length=100)
+
+class Inscription(models.Model): 
+
+     eleve=models.ForeignKey(Eleve,on_delete=models.SET_NULL,null=True)
+     annee=models.ForeignKey(AnneeInscription,on_delete=models.CASCADE)
+     date_inscription = models.DateField(default=datetime.date.today)
+     ligne = models.ForeignKey(Ligne, on_delete=models.SET_NULL,null=True,blank=False,)
+     classe = models.ForeignKey(Classe, on_delete=models.SET_NULL,null=True,blank=False,)
 
      type_inscription = models.CharField(max_length=50, choices=[
 
@@ -124,10 +137,6 @@ class Eleve(models.Model):
      montant_frais = models.DecimalField(max_length=50,decimal_places=2,max_digits=10,null=True,blank=True,)
      etat = models.CharField(max_length=50,default="en_attente",)
      user=models.ForeignKey(User,on_delete=models.SET_NULL,null=True)
-
-     def __str__(self):
-          return self.nom
-          
 
 class Itineraire(models.Model):
      date_itineraire = models.DateField(null=True, default=datetime.date.today,)
@@ -149,12 +158,13 @@ class BusAssignation(models.Model):
      date_assignation = models.DateField(default=timezone.now,)
      bus = models.ForeignKey(Bus,on_delete=models.CASCADE,)
      itineraire = models.ForeignKey("Itineraire",on_delete=models.CASCADE,)
+
      def __str__(self):
           return f"bus assignation N° {self.pk}"
 
 class AssignationItineraire(models.Model):
      dateAssigntion = models.DateField(default=timezone.now,)
-     eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE,null=True,blank=False,)
+     inscription = models.ForeignKey('Inscription', on_delete=models.CASCADE,null=True,blank=False,)
      itineraire = models.ForeignKey('Itineraire', on_delete=models.CASCADE,null=True,blank=False,)
      bus = models.ForeignKey(Bus,on_delete=models.CASCADE,null=True)
 

@@ -1,0 +1,219 @@
+section{
+    background-color: #f5f5f5;
+
+    position: relative;
+    min-height: 100vh;
+    width:  calc(100% - 240px);
+    left: 240px;
+    transition:  all 0.4s ease;
+}
+.side-bar.active ~ section{
+   width:  calc(100% - 60px);
+   left: 60px;
+}
+section nav{
+    position: fixed; 
+    top:0;
+    z-index: 10;
+    width:  calc(100% - 240px);
+    left: 240px;
+    height: 80px;
+    background-color: #fff;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.5s ease;
+}
+.side-bar.active ~ section nav{
+   width:  calc(100% - 60px);
+   left: 60px;
+}
+section nav .side-bar-button{
+   display: flex;
+   align-items: center;
+   font-size: 24px;
+   font-weight: 500;
+}
+section nav .side-bar-button i {
+   font-size: 35px;
+   margin-right: 10px;
+}
+section nav .search-box{
+   width: 550px;
+   height: 50px;
+   margin: 0 20px;
+   
+   position: relative;
+}   
+nav .search-box input{
+   position: absolute;
+  
+   height: 100%;
+   width: 100%;
+   border-radius: 6px;
+   padding: 0;
+   font-size: 17px;
+   background: #F5F6FA;
+   border: 2px solid #EFEEF1;
+   outline: none;
+}
+nav .search-box .fa-magnifying-glass{
+    position: absolute;
+    right: 5px;
+    height: 40px;
+    top:50%;
+    transform: translateY(-50%);
+    width: 40px;
+    background: #2697FF;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 18px;
+    line-height: 40px;
+    text-align: center;
+}
+nav .profile-detail{
+    display: flex;
+    align-items: center;
+    height: 50px;
+    min-width: 190px;
+    min-width: 190px;
+    background: #F5F6FA;
+    border: 2px solid #EFEEF1;
+    border-radius: 6px;
+    padding: 0 15px 0 2px;
+}
+nav .profile-detail img{
+    height: 40px;
+    width: 40px;
+    /* object-fit: cover; */
+    border-radius: 6px;
+}
+nav .profile-detail .admin-name{
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    margin: 0 10px;
+    white-space: nowrap;
+
+}
+nav .profile-detail i{
+   color: #333;
+   font-size: 25px;
+}
+section .home_content{
+    position: relative;
+   padding-top: 100px;
+}
+.home_content {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.home_content h1 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.home_content form {
+    display: flex;
+    flex-direction: column;
+}
+
+.home_content form label {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.home_content form input[type="text"],
+.home_content form input[type="number"] ,
+.home_content form textarea,
+.home_content form input[type="email"]{
+    display: block;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.home_content form input[type="file"] {
+    margin-bottom: 20px;
+}
+
+.home_content form button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+.home_content form select{
+    margin-bottom: 20px;
+}
+.home_content form button[type="submit"]:hover {
+    background-color: #0069d9;
+}
+ 
+/* responsive */
+@media (max-width:1216px){
+    .side-bar{
+        width: 60px;
+    }
+    .side-bar.active{
+        width: 220px;
+    }
+    
+    section{
+        width:  calc(100% - 60px);
+        left: 60px;
+    }
+    .side-bar.active ~ section{
+        width:  calc(100% - 220px);
+        left: 220px;
+    }
+    section nav{
+        width:  calc(100% - 60px);
+        left: 60px;
+    }
+    .side-bar.active ~ section nav{
+        width:  calc(100% - 220px);
+        left: 220px;
+    }
+}
+@media (max-width: 1078px){
+    section .sales-boxes{
+        flex-direction: column;
+    }
+        section .sales-boxes .box{
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        section .sales-boxes .top-sale{
+            flex-direction: column;
+            margin-left: 0%;
+        }
+}
+@media (max-width:1000px){
+    section .overview-boxes .box{
+        width: calc(100% /2 - 15px);
+    }
+}
+@media (max-width:650px){
+
+    nav .profile-detail{
+        min-width: 50px;
+        height: 50px;
+       
+    }
+    nav .dashboard,
+    nav .profile-detail .admin-name,
+    nav .profile-detail i{
+        display: none;
+    }
+}

@@ -12,6 +12,7 @@ from .views_generic import (
       ClasseListView, ClasseDetailView, ClasseCreateView, ClasseUpdateView, ClasseDeleteView,
       ParentListView, ParentDetailView, ParentCreateView, ParentUpdateView, ParentDeleteView,
       EleveListView, EleveDetailView, EleveCreateView, EleveUpdateView, EleveDeleteView,
+ 
       ItineraireListView, ItineraireDetailView, ItineraireCreateView, ItineraireUpdateView, ItineraireDeleteView,
       HoraireListView, HoraireDetailView, HoraireCreateView, HoraireUpdateView, HoraireDeleteView,
       BusAssignationListView, BusAssignationDetailView, BusAssignationCreateView, BusAssignationUpdateView, BusAssignationDeleteView,

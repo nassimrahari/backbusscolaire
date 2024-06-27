@@ -1,0 +1,9 @@
+La propriété CSS box-shadow accepte jusqu'à quatre valeurs, qui contrôlent respectivement la position horizontale, la position verticale, le flou et la taille de l'ombre.
+
+Dans l'exemple box-shadow: 0 5px 10px 7px, cela signifie :
+
+0 : la position horizontale de l'ombre est centrée (pas de décalage horizontal)
+5px : la position verticale de l'ombre est décalée de 5 pixels vers le bas par rapport à l'élément
+10px : le flou de l'ombre s'étend sur 10 pixels
+7px : la taille de l'ombre s'étend sur 7 pixels au-delà des bords de l'élément
+En résumé, cette propriété définit une ombre centrée horizontalement, décalée de 5 pixels vers le bas, avec un flou de 10 pixels et une taille de 7 pixels. Ce type d'ombre peut donner l'impression que l'élément est légèrement soulevé du fond ou qu'il flotte dans l'espace.

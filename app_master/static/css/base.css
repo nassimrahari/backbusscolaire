@@ -1,0 +1,190 @@
+*{
+    box-sizing: border-box;
+    object-fit: cover;
+
+
+}
+body{
+    max-width: 100vw;
+}
+section{
+    height: 520vh;
+}
+.side-bar{
+    box-shadow: 5px 10px 15px rgba(0, 0, 0, 0.5) !important;
+    
+}
+.accordion{
+    background-color: #E83B68 !important;
+    border-radius: 0 !important; 
+   /* border: 1px solid rgb(0, 0, 0);*/
+
+}
+.accordion-button{
+
+ border-radius: 0 !important; 
+    background-color: #eeeeee;
+    color: #E83B68;
+/* border: 1px solid red; */
+    width: 120%;
+}
+.accordion-button{
+
+    border-radius: 0 !important; 
+       background-color: #eeeeee;
+       color: #E83B68;
+   /* border: 1px solid red; */
+       width: 120%;
+       position: relative;
+   }
+.accordion-button i{
+
+   font-size: 20px;
+   position: absolute;
+   }
+.accordion-button span{
+    position: absolute;
+    left: 45px;
+    font-size: 13px;
+    margin-left: 20px;
+    font-weight: 500;
+    }
+    .accordion-body li{
+        margin-bottom: 10px;
+    }
+.accordion-body a i{
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 900;
+        
+    }
+.accordion-body a span{
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+}
+.accordion-item{
+
+    width: 100%;
+    /*border: 1px solid rgb(0, 0, 0);*/
+
+}
+.table-responsive{
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 5px 10px 15px rgba(0,0,0,0.1);
+    padding: 15px;
+    background-color: #ffffff;
+}
+table th{
+    
+  
+}
+
+table th{
+    background-color: #E83B68 !important;
+
+    color: #fff;
+    font-weight: 900;
+}
+form.menu-item a{
+    display: block;
+    padding-left: 0;
+    transform: translateX(-15%);
+   
+}
+form.menu-item i{
+    font-size: 22px;
+}
+.link_name{
+    font-size: 14px;
+    margin-left: 10px;
+    font-weight: 600;
+}
+
+.side-bar input {
+    border: none;
+
+}
+.side-bar .dashboard{
+
+}
+.side-bar .dashboard{
+    position: relative;
+}
+.side-bar .dashboard i{
+    position: absolute;
+    left: 18px;
+}
+.side-bar .dashboard span{
+    position: absolute;
+    left: 45px;
+}
+button[type="submit"]{
+   
+    display: block;
+
+}
+.submenu-item{
+    margin-left: 0 !important;
+    transform: translateX(-20px);
+
+}
+
+.logout{
+    position: absolute;
+    left: 60px;
+    color: #E83B68;
+}
+.form-logout{
+    position: relative;
+     
+    object-fit: none;
+}
+.form-logout i{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 15px !important;
+}
+.form-logout input{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 65px !important;
+}
+
+
+
+.logo_name {
+    text-align: left;
+    
+    display: flex;
+    flex-direction: column;
+ 
+    padding: 0;
+    margin-left: 60px !important;
+}
+.logo_name .project{
+    font-weight: 900;
+    font-size: 18px !important;
+    color: rgb(233, 69, 84) !important;
+    margin-left: 5px !important;
+}
+
+.logo_name .generator{
+    margin-left: 5px !important;
+}
+.logo-img{
+    margin-left: 16px;
+    width: 40px;
+    position: absolute;
+}
+.logo-detail img{
+    z-index: 1000;
+    width: 100%;
+}
+.accordion-button >i,
+.accordion-button >span{
+    color: #4D509E ;
+}

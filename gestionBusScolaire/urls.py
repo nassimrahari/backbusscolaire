@@ -8,6 +8,7 @@ from rest_framework import routers
 router = routers.DefaultRouter()
 
 from transport_scolaire.view_sets import (
+     AnneeInscriptionViewSet,
      ChauffeurViewSet,
      EcoleAssignationViewSet,
      TypeVehiculeViewSet,
@@ -20,6 +21,7 @@ from transport_scolaire.view_sets import (
      ClasseViewSet,
      ParentViewSet,
      EleveViewSet,
+     InscriptionViewSet,
      ItineraireViewSet,
      HoraireViewSet,
      BusAssignationViewSet,
@@ -36,7 +38,9 @@ router.register('transport_scolaire/ordrelieus', OrdreLieuViewSet,basename='tran
 router.register('transport_scolaire/ecoles', EcoleViewSet,basename='transport_scolaire.ecoles')
 router.register('transport_scolaire/classes', ClasseViewSet,basename='transport_scolaire.classes')
 router.register('transport_scolaire/parents', ParentViewSet,basename='transport_scolaire.parents')
+router.register('transport_scolaire/annee_inscriptions', AnneeInscriptionViewSet,basename='transport_scolaire.annee_inscriptions')
 router.register('transport_scolaire/eleves', EleveViewSet,basename='transport_scolaire.eleves')
+router.register('transport_scolaire/inscriptions', InscriptionViewSet,basename='transport_scolaire.inscriptions')
 router.register('transport_scolaire/itineraires', ItineraireViewSet,basename='transport_scolaire.itineraires')
 router.register('transport_scolaire/horaires', HoraireViewSet,basename='transport_scolaire.horaires')
 router.register('transport_scolaire/busassignations', BusAssignationViewSet,basename='transport_scolaire.busassignations')
